@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>שיעור 6: ניתוב בסיסי וניתוב סטטי | האקדמיה לרשתות</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: #022c22; /* Dark Green Cyber Theme */
+            background: linear-gradient(135deg, #022c22 0%, #051610 100%);
+            color: #f1f5f9;
+        }
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #04100c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 3px;
+        }
+        @keyframes active-pulse {
+            0%, 100% { filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.4)); }
+            50% { filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.8)); }
+        }
+        .glow-green {
+            animation: active-pulse 2s infinite;
+        }
+        @keyframes hop-packet {
+            0% { left: 10%; top: 50%; opacity: 1; }
+            33% { left: 45%; top: 30%; }
+            66% { left: 55%; top: 30%; }
+            100% { left: 90%; top: 50%; opacity: 1; }
+        }
+        .hop-animate {
+            animation: hop-packet 2.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+        @keyframes hop-packet-reverse {
+            0% { left: 90%; top: 50%; opacity: 1; }
+            33% { left: 55%; top: 30%; }
+            66% { left: 45%; top: 30%; }
+            100% { left: 10%; top: 50%; opacity: 1; }
+        }
+        .hop-animate-reverse {
+            animation: hop-packet-reverse 2.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        /* --- Crazy Floating Bot Modal Animations --- */
+        @keyframes crazy-shake {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            20% { transform: rotate(-3deg) scale(1.02); }
+            40% { transform: rotate(3deg) scale(0.98); }
+            60% { transform: rotate(-2deg) scale(1.01); }
+            80% { transform: rotate(2deg) scale(0.99); }
+        }
+        .crazy-shake-hover:hover {
+            animation: crazy-shake 0.4s ease-in-out infinite;
+        }
+        @keyframes float-around {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(2deg); }
+        }
+        .animate-float {
+            animation: float-around 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+    <!-- TOP BAR -->
+    <header class="border-b border-emerald-900/40 bg-slate-950/90 backdrop-blur sticky top-0 z-50 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-emerald-600/20 p-2 rounded-lg border border-emerald-500/30 text-emerald-400">
+                    <i data-lucide="route" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="font-black text-lg tracking-wide text-white">NET_ACADEMY // <span class="text-emerald-400">CLASS_06</span></h1>
+                    <p class="text-xs text-slate-400">ניתוב בסיסי וניתוב סטטי: בונים את נתיבי המידע של הגלובוס</p>
+                </div>
+            </div>
+            
+            <!-- Gamification & Progress Status -->
+            <div class="flex items-center gap-6">
+                <div class="hidden md:flex items-center gap-2 bg-slate-900 px-3 py-1.5 rounded-full border border-slate-800">
+                    <span class="text-xs text-slate-400">רמה:</span>
+                    <span class="text-xs font-bold text-emerald-400" id="user-level">שוליית נתבים</span>
+                    <div class="w-16 bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                        <div id="level-bar" class="bg-emerald-500 h-full w-3/5 transition-all duration-500"></div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-2 bg-emerald-950/40 border border-emerald-500/30 px-3 py-1.5 rounded-lg text-emerald-400">
+                    <i data-lucide="zap" class="w-4 h-4 text-yellow-400 animate-pulse"></i>
+                    <span class="text-xs font-bold">XP:</span>
+                    <span class="text-sm font-black code-font text-emerald-300" id="xp-counter">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN BODY -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- SIDEBAR -->
+        <aside class="lg:col-span-3 flex flex-col gap-4">
+            <div class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-5">
+                <h3 class="text-sm font-bold text-slate-300 mb-4 tracking-wider uppercase border-b border-slate-800 pb-2">מפת המשימה</h3>
+                <nav class="flex flex-col gap-2">
+                    <!-- Step 1 -->
+                    <button id="btn-step-1" onclick="switchStep(1)" class="w-full text-right flex items-center justify-between p-3 rounded-lg bg-emerald-950/30 border border-emerald-500/40 text-emerald-300 transition-all font-bold">
+                        <div class="flex items-center gap-3">
+                            <span class="code-font text-xs opacity-60">01.</span>
+                            <span>אי הפרובינציות המנותק</span>
+                        </div>
+                        <i data-lucide="compass" class="w-4 h-4 text-emerald-400"></i>
+                    </button>
+                    <!-- Step 2 -->
+                    <button id="btn-step-2" onclick="switchStep(2)" class="w-full text-right flex items-center justify-between p-3 rounded-lg bg-slate-900/40 border border-slate-800 text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
+                        <div class="flex items-center gap-3">
+                            <span class="code-font text-xs opacity-60">02.</span>
+                            <span>איך נתב חושב? (מפת הדרכים)</span>
+                        </div>
+                        <i data-lucide="map" class="w-4 h-4 opacity-50"></i>
+                    </button>
+                    <!-- Step 3 -->
+                    <button id="btn-step-3" onclick="switchStep(3)" class="w-full text-right flex items-center justify-between p-3 rounded-lg bg-slate-900/40 border border-slate-800 text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
+                        <div class="flex items-center justify-between p-3 rounded-lg text-slate-400">
+                            <div class="flex items-center gap-3">
+                                <span class="code-font text-xs opacity-60">03.</span>
+                                <span>סימולטור טבלאות ניתוב</span>
+                            </div>
+                            <i data-lucide="git-pull-request" class="w-4 h-4 opacity-50"></i>
+                        </div>
+                    </button>
+                    <!-- Step 4 -->
+                    <button id="btn-step-4" onclick="switchStep(4)" class="w-full text-right flex items-center justify-between p-3 rounded-lg bg-slate-900/40 border border-slate-800 text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
+                        <div class="flex items-center gap-3">
+                            <span class="code-font text-xs opacity-60">04.</span>
+                            <span>Cisco AI Auditor</span>
+                        </div>
+                        <i data-lucide="terminal" class="w-4 h-4 opacity-50"></i>
+                    </button>
+                    <!-- Step 5 -->
+                    <button id="btn-step-5" onclick="switchStep(5)" class="w-full text-right flex items-center justify-between p-3 rounded-lg bg-slate-900/40 border border-slate-800 text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all">
+                        <div class="flex items-center gap-3">
+                            <span class="code-font text-xs opacity-60">05.</span>
+                            <span>דוח סיום והישגים</span>
+                        </div>
+                        <i data-lucide="award" class="w-4 h-4 opacity-50"></i>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- SYSTEM LOG -->
+            <div class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-5 flex-grow flex flex-col justify-between">
+                <div>
+                    <h4 class="text-xs font-bold text-slate-400 tracking-wider mb-3">יומן ניתוב מנוע (Cisco)</h4>
+                    <div id="system-log" class="text-xs code-font text-emerald-450/80 space-y-2 h-48 overflow-y-auto bg-slate-900/50 p-3 rounded border border-slate-800">
+                        <p>[09:15:01] פרוטוקול ניתוב סטטי (Static Routing Engine) זמין.</p>
+                        <p>[09:15:02] ממתין להזנת נתיבים ידנית...</p>
+                    </div>
+                </div>
+                <div class="mt-4 pt-4 border-t border-slate-800/50">
+                    <button onclick="resetProgress()" class="text-xs text-red-400 hover:text-red-300 flex items-center gap-1.5 transition-colors">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                        <span>אפס התקדמות שיעור</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CONTENT DISPLAY AREA -->
+        <section class="lg:col-span-9 flex flex-col gap-6">
+
+            <!-- STEP 1: THE MYSTERY OF BORDER POSTMAN -->
+            <div id="step-1" class="step-container space-y-6">
+                <div class="bg-gradient-to-r from-emerald-950/40 to-slate-950 border border-emerald-900/40 rounded-2xl p-6 md:p-8 relative overflow-hidden">
+                    <div class="absolute -right-20 -top-20 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <span class="bg-emerald-900/60 border border-emerald-400/30 text-emerald-300 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-widest">מפת המחשבה המקשרת</span>
+                    
+                    <h2 class="text-2xl md:text-3xl font-black text-white mt-4 mb-3">משבר השילוח באיי הפרובינציות</h2>
+                    <p class="text-slate-300 leading-relaxed text-base">
+                        תאר לעצמך שאתה מנהל חברת משלוחים באי הפרובינציות. האי מחולק לשלוש רשתות נפרדות:
+                        רשת א' מחוברת פיזית ישירות לנתב א'. רשת ב' היא כביש מהיר המחבר בין נתב א' לנתב ב'. רשת ג' מחוברת פיזית אך ורק לנתב ב'.
+                        <br><br>
+                        כעת, תושב מרשת א' שולח חבילה המיועדת לתושב ברשת ג'. החבילה מגיעה אל נתב א'. 
+                        <span class="text-emerald-400 font-bold">אבל נתב א' מעולם לא ראה את רשת ג'! אין לו כבל פיזי שמחובר אליה.</span> מה יקרה לחבילה?
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                        <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+                            <h3 class="text-emerald-400 font-bold mb-2 flex items-center gap-2">
+                                <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                                שגיאת אובדן נתיב (Destination Host Unreachable)
+                            </h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                נתבים הם מכשירים קשוחים. אם הם מקבלים חבילה המיועדת לרשת שהם אינם מכירים במפה שלהם (טבלת הניתוב), הם לא מנסים לנחש. הם פשוט משליכים את החבילה לפח ושולחים הודעת שגיאה.
+                            </p>
+                        </div>
+                        <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+                            <h3 class="text-teal-400 font-bold mb-2 flex items-center gap-2">
+                                <i data-lucide="check-square" class="w-5 h-5"></i>
+                                הפתרון: ניתוב סטטי (Static Route)
+                            </h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                על מנהל הרשת (אתה!) להיכנס באופן ידני לנתב א' ולשרטט לו קו במפה: "אם מגיעה אליך חבילה לרשת ג', העבר אותה לנתב ב'". זה נקרא ניתוב סטטי.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 bg-slate-900/50 p-5 rounded-xl border border-slate-800/80">
+                        <p class="text-xs text-slate-300 font-bold mb-3">שאלה מהירה: אם הגדרת נתיב סטטי מנתב א' לנתב ב', האם דניאל מרשת ג' יוכל לענות בחזרה למחשב ברשת א'?</p>
+                        <div class="flex flex-col gap-2">
+                            <button onclick="answerScenario(1)" class="bg-slate-950 hover:bg-slate-800 text-right border border-slate-700 text-slate-300 text-xs px-4 py-2.5 rounded transition-all">כן, ברגע שהדרך פתוחה לצד אחד, היא פתוחה אוטומטית גם לצד השני.</button>
+                            <button onclick="answerScenario(2)" class="bg-slate-950 hover:bg-slate-800 text-right border border-slate-700 text-slate-300 text-xs px-4 py-2.5 rounded transition-all">לא, ניתוב הוא חד-כיווני! חייבים להגדיר גם נתיב חזור מנתב ב' אל נתב א', אחרת חבילת התשובה תלך לאיבוד.</button>
+                        </div>
+                        <div id="scenario-feedback" class="mt-4 hidden p-3 rounded-lg text-xs font-semibold"></div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end">
+                    <button onclick="switchStep(2)" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 transition-all">
+                        <span>למד איך נתב חושב</span>
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 2: THEORY (THE ROUTING TABLE) -->
+            <div id="step-2" class="step-container space-y-6 hidden">
+                <div class="bg-slate-950 border border-slate-800/80 rounded-2xl p-6 md:p-8">
+                    <span class="text-emerald-400 text-xs font-bold uppercase tracking-wider">תיאוריה חיונית</span>
+                    <h2 class="text-2xl font-black text-white mt-2 mb-4">טבלת הניתוב: ה-Waze של רשתות האינטרנט</h2>
+                    
+                    <p class="text-slate-300 leading-relaxed mb-6">
+                        כל נתב בעולם מחזיק בזיכרון שלו טבלה דינמית ומהירה הנקראת **טבלת הניתוב (Routing Table)**. כשמגיעה חבילה, הנתב מחפש את כתובת ה-IP של היעד שלה בתוך שלוש קטגוריות מרכזיות:
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+                            <span class="text-emerald-400 font-bold code-font block mb-1">C - Directly Connected</span>
+                            <h3 class="text-white font-bold text-sm mb-1">מחובר ישירות</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                רשתות המחוברות עם כבל פיזי ישיר לפורט הנתב. הנתב מכיר אותן אוטומטית ברגע שהפורט דולק (Up) ללא צורך בהגדרות.
+                            </p>
+                        </div>
+                        <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+                            <span class="text-yellow-500 font-bold code-font block mb-1">S - Static Route</span>
+                            <h3 class="text-white font-bold text-sm mb-1">ניתוב סטטי</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                נתיב שנכתב ידנית על ידי מנהל הרשת. אמין מאוד, צורך אפס משאבים, אך דורש עבודה והתערבות ידנית בכל פעם שהרשת משתנה.
+                            </p>
+                        </div>
+                        <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+                            <span class="text-cyan-400 font-bold code-font block mb-1">D/O - Dynamic Route</span>
+                            <h3 class="text-white font-bold text-sm mb-1">ניתוב דינמי</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                נתיבים שנלמדים אוטומטית על ידי פרוטוקולים חכמים (כמו OSPF או RIP). הנתבים מדברים זה עם זה ומעדכנים מפות לבד כשכבל נקרע.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Static route anatomy block -->
+                    <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 max-w-2xl mx-auto mt-6 space-y-4">
+                        <div class="text-center text-xs text-slate-400 font-bold">מבנה פקודת ניתוב סטטי בסיסית בסיסקו (CLI CLI):</div>
+                        
+                        <div class="bg-slate-950 p-3 rounded border border-slate-800 text-center code-font text-xs text-emerald-400 overflow-x-auto">
+                            ip route <span class="text-yellow-400">[Target Network]</span> <span class="text-cyan-400">[Subnet Mask]</span> <span class="text-pink-400">[Next Hop IP]</span>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2 text-[10px] text-center pt-2">
+                            <div>
+                                <span class="block text-yellow-400 font-bold">1. רשת היעד</span>
+                                <span class="text-slate-400">לאיזו רשת מרוחקת אנחנו מנסים להגיע (למשל: 172.16.0.0).</span>
+                            </div>
+                            <div>
+                                <span class="block text-cyan-400 font-bold">2. מסכת רשת</span>
+                                <span class="text-slate-400">איזה חלק מהיעד מייצג את הרשת (למשל: 255.255.255.0).</span>
+                            </div>
+                            <div>
+                                <span class="block text-pink-400 font-bold">3. הצעד הבא (Next Hop)</span>
+                                <span class="text-slate-400">מהו ה-IP של פורט הנתב הבא בדרך שיודע להעביר את זה הלאה.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between">
+                    <button onclick="switchStep(1)" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-bold px-5 py-3 rounded-xl flex items-center gap-2 transition-all">
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        <span>חזרה למבוא</span>
+                    </button>
+                    <button onclick="switchStep(3)" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 transition-all">
+                        <span>לסימולטור טבלאות ניתוב</span>
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 3: INTERACTIVE ROUTING TABLE CONFIGURATOR -->
+            <div id="step-3" class="step-container space-y-6 hidden">
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 md:p-8">
+                    <span class="bg-emerald-900/60 border border-emerald-400/30 text-emerald-300 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-widest">תחנת עבודה מעשית</span>
+                    <h2 class="text-2xl font-black text-white mt-3">סימולטור: בניית מפת הדרכים הסטטית</h2>
+                    <p class="text-slate-400 text-sm mt-1">
+                        לפניך טופולוגיה של שתי רשתות קצה מבודדות המחוברות דרך שני נתבים (R1 ו-R2). הגדר את שורת הניתוב הסטטית בטבלה של כל נתב כדי לפתוח את הנתיב הלוך וחזור!
+                    </p>
+
+                    <div class="mt-8 bg-slate-900 rounded-xl p-5 border border-slate-800 relative">
+                        <!-- Visual Topology Graphic -->
+                        <div class="relative w-full h-44 flex items-center justify-between px-10 bg-slate-950 border border-slate-850 rounded-xl overflow-hidden">
+                            <!-- Network A -->
+                            <div class="text-center z-10">
+                                <i data-lucide="monitor" class="w-10 h-10 text-emerald-400 mx-auto"></i>
+                                <span class="text-xs font-black block mt-1">PC A</span>
+                                <span class="text-[9px] code-font text-slate-400">192.168.1.10</span>
+                            </div>
+
+                            <!-- Router 1 -->
+                            <div class="text-center z-10">
+                                <div class="w-14 h-14 rounded-full bg-slate-900 border-2 border-emerald-500 flex items-center justify-center mx-auto glow-green">
+                                    <i data-lucide="router" class="w-7 h-7 text-white"></i>
+                                </div>
+                                <span class="text-xs font-black block mt-1">Router 1</span>
+                                <span class="text-[9px] code-font text-yellow-400 block">WAN IP: 10.0.0.1</span>
+                            </div>
+
+                            <!-- WAN Tunnel Link -->
+                            <div class="flex-grow border-t-2 border-dashed border-slate-800 mx-4 relative">
+                                <div id="packet-flow-dot" class="absolute w-3.5 h-3.5 bg-yellow-400 rounded-full blur-[1px] hidden"></div>
+                            </div>
+
+                            <!-- Router 2 -->
+                            <div class="text-center z-10">
+                                <div class="w-14 h-14 rounded-full bg-slate-900 border-2 border-emerald-500 flex items-center justify-center mx-auto">
+                                    <i data-lucide="router" class="w-7 h-7 text-white"></i>
+                                </div>
+                                <span class="text-xs font-black block mt-1">Router 2</span>
+                                <span class="text-[9px] code-font text-yellow-400 block">WAN IP: 10.0.0.2</span>
+                            </div>
+
+                            <!-- Network B -->
+                            <div class="text-center z-10">
+                                <i data-lucide="monitor" class="w-10 h-10 text-emerald-400 mx-auto"></i>
+                                <span class="text-xs font-black block mt-1">PC B</span>
+                                <span class="text-[9px] code-font text-slate-400">172.16.1.20</span>
+                            </div>
+                        </div>
+
+                        <!-- Config Panel for Router 1 and Router 2 Tables -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                            <!-- Router 1 Static Route Form -->
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                                <h3 class="text-xs font-bold text-yellow-400 uppercase tracking-wide mb-3 flex items-center gap-1.5">
+                                    <i data-lucide="settings" class="w-4 h-4"></i>
+                                    <span>טבלת ניתוב: Router 1</span>
+                                </h3>
+                                <div class="space-y-3 text-xs">
+                                    <div>
+                                        <label class="block text-slate-400 mb-1">רשת יעד מרוחקת (PC B Network)</label>
+                                        <select id="r1-dest" class="w-full bg-slate-900 border border-slate-800 rounded p-2 text-white font-mono focus:outline-none focus:border-emerald-500">
+                                            <option value="none">-- בחר רשת יעד --</option>
+                                            <option value="172.16.1.0">172.16.1.0 (הרשת של PC B)</option>
+                                            <option value="192.168.1.0">192.168.1.0 (הרשת של PC A)</option>
+                                            <option value="10.0.0.0">10.0.0.0 (רשת הקישור - WAN)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-400 mb-1">הצעד הבא (Next Hop IP - הפורט של R2)</label>
+                                        <select id="r1-hop" class="w-full bg-slate-900 border border-slate-800 rounded p-2 text-white font-mono focus:outline-none focus:border-emerald-500">
+                                            <option value="none">-- בחר Next Hop --</option>
+                                            <option value="10.0.0.2">10.0.0.2 (הכניסה של Router 2)</option>
+                                            <option value="10.0.0.1">10.0.0.1 (היציאה של Router 1)</option>
+                                            <option value="192.168.1.1">192.168.1.1 (השער המקומי של PC A)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Router 2 Static Route Form -->
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                                <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-wide mb-3 flex items-center gap-1.5">
+                                    <i data-lucide="settings" class="w-4 h-4"></i>
+                                    <span>טבלת ניתוב: Router 2</span>
+                                </h3>
+                                <div class="space-y-3 text-xs">
+                                    <div>
+                                        <label class="block text-slate-400 mb-1">רשת יעד מרוחקת (PC A Network)</label>
+                                        <select id="r2-dest" class="w-full bg-slate-900 border border-slate-800 rounded p-2 text-white font-mono focus:outline-none focus:border-emerald-500">
+                                            <option value="none">-- בחר רשת יעד --</option>
+                                            <option value="192.168.1.0">192.168.1.0 (הרשת של PC A)</option>
+                                            <option value="172.16.1.0">172.16.1.0 (הרשת של PC B)</option>
+                                            <option value="10.0.0.0">10.0.0.0 (רשת הקישור - WAN)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-slate-400 mb-1">הצעד הבא (Next Hop IP - הפורט של R1)</label>
+                                        <select id="r2-hop" class="w-full bg-slate-900 border border-slate-800 rounded p-2 text-white font-mono focus:outline-none focus:border-emerald-500">
+                                            <option value="none">-- בחר Next Hop --</option>
+                                            <option value="10.0.0.1">10.0.0.1 (הכניסה של Router 1)</option>
+                                            <option value="10.0.0.2">10.0.0.2 (היציאה של Router 2)</option>
+                                            <option value="172.16.1.1">172.16.1.1 (השער המקומי של PC B)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Active Testing and simulation launch -->
+                        <div class="border-t border-slate-800 pt-4 mt-6 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-950 p-3 rounded-lg">
+                            <div class="text-xs text-slate-400">
+                                <p class="font-bold text-white mb-0.5">שלח בקשת תקשורת:</p>
+                                <p>הקש על כפתור שיגור הפינג כדי לבדוק האם טבלאות הניתוב שלך מוגדרות כראוי ומאפשרות תנועת הלוך ושוב.</p>
+                            </div>
+                            <button onclick="runRoutingSimulator()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-5 rounded-lg text-xs transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="play" class="w-4 h-4"></i>
+                                <span>הפעל בדיקת פינג דו-כיוונית</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="sim-feedback" class="mt-4 hidden p-4 rounded-xl text-xs font-bold"></div>
+                </div>
+
+                <div class="flex justify-between">
+                    <button onclick="switchStep(2)" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-bold px-5 py-3 rounded-xl flex items-center gap-2 transition-all">
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        <span>חזרה להסבר</span>
+                    </button>
+                    <button id="btn-to-step-4" onclick="switchStep(4)" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 transition-all disabled:opacity-40 disabled:pointer-events-none" disabled>
+                        <span>המשך ל-Cisco AI Auditor</span>
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 4: CISCO AI AUDITOR (AI STEP) -->
+            <div id="step-4" class="step-container space-y-6 hidden">
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 md:p-8">
+                    <div class="flex justify-between items-start flex-wrap gap-4 border-b border-slate-800 pb-4">
+                        <div>
+                            <span class="bg-emerald-950 border border-emerald-500/30 text-emerald-400 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-widest">מבקר רשתות מבוסס AI</span>
+                            <h2 class="text-2xl font-black text-white mt-3">סימולטור סיסקו טרמינל: Cisco AI Auditor</h2>
+                            <p class="text-slate-400 text-sm mt-1">כעת, נסה לכתוב את פקודת הניתוב הסטטית האמיתית של סיסקו (CLI) שתנתב לרשת 172.16.1.0/24 דרך 10.0.0.2 וה-AI יבקר את הסינטקס שלך!</p>
+                        </div>
+                        <div class="bg-slate-900/80 border border-slate-800 px-3 py-1 rounded text-xs text-emerald-400 code-font flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>STATUS: ACTIVE_AUDITOR</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 mt-6">
+                        <!-- Left Side: Interactive Command terminal -->
+                        <div class="md:col-span-5 bg-black p-5 rounded-xl border border-slate-800 space-y-4">
+                            <div class="flex items-center justify-between border-b border-slate-900 pb-2">
+                                <span class="text-[10px] text-slate-500 font-mono">Router1# configure terminal</span>
+                                <div class="flex gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                                    <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-3 text-xs">
+                                <p class="text-slate-400 text-[11px] leading-relaxed">
+                                    הקלד את פקודת הניתוב הסטטית המלאה. הפורמט הנדרש:
+                                    <br>
+                                    <code class="text-emerald-400">ip route [target_net] [subnet_mask] [next_hop]</code>
+                                </p>
+                                
+                                <div>
+                                    <label class="block text-slate-500 font-mono mb-1">Router1(config)#</label>
+                                    <input type="text" id="cli-command-input" placeholder="ip route 172.16.1.0 255.255.255.0 10.0.0.2" class="w-full bg-slate-950 text-emerald-400 border border-slate-800 rounded p-2.5 font-mono focus:outline-none focus:border-emerald-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Side: Auditor Bot Output -->
+                        <div class="md:col-span-7 bg-slate-900 border border-slate-800 p-5 rounded-xl flex flex-col justify-between min-h-[350px]">
+                            <!-- Audit Output Area -->
+                            <div class="flex-grow flex flex-col">
+                                <h3 class="text-xs font-bold text-white mb-3">דוח בדיקת סינטקס (AI Auditor):</h3>
+                                <div id="chat-messages" class="flex-grow overflow-y-auto bg-slate-950 p-4 rounded-lg border border-slate-805 h-[240px] space-y-3 text-xs">
+                                    <div class="text-slate-400">
+                                        <span class="text-[10px] font-bold text-emerald-400 block mb-1">AUDITOR_SYSTEM // </span>
+                                        הקלד את פקודת ה-ip route שלך משמאל והגש אותה לבדיקה. אני אנתח אותה בזמן אמת, אבדוק שגיאות סינטקס או הגדרות לוגיות שגויות ואחזיר לך ניתוח מקצועי כפי שבודק של סיסקו היה עושה!
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button onclick="runCiscoAuditor()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg text-xs transition-all flex items-center justify-center gap-2 mt-4">
+                                <i data-lucide="check-circle" class="w-4 h-4"></i>
+                                <span>שגר פקודה לבדיקת ה-Auditor</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Achievement Unlock Alert -->
+                    <div id="ai-bonus-alert" class="mt-4 hidden bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 p-4 rounded-xl flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-xl">🏆</span>
+                            <div>
+                                <p class="font-bold">הישג נפתח! מקודד CLI מיומן</p>
+                                <p class="text-xs opacity-80">כתבת פקודת ניתוב ללא שגיאות סינטקס ועברת בהצלחה את ביקורת הסיסקו.</p>
+                            </div>
+                        </div>
+                        <span class="font-mono text-xs text-emerald-400 font-bold">+95 XP</span>
+                    </div>
+
+                </div>
+                <div class="flex justify-between">
+                    <button onclick="switchStep(3)" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-bold px-5 py-3 rounded-xl flex items-center gap-2 transition-all">
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        <span>חזרה לסימולטור</span>
+                    </button>
+                    <button id="btn-to-step-5" onclick="switchStep(5)" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 transition-all disabled:opacity-40 disabled:pointer-events-none" disabled>
+                        <span>עבור לדוח סיום המשימה</span>
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 5: REFLECTION & ACTION REPORT -->
+            <div id="step-5" class="step-container space-y-6 hidden">
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 md:p-8">
+                    <span class="text-emerald-400 text-xs font-bold uppercase tracking-wider">משוב עמיתים וסגירת דוח</span>
+                    <h2 class="text-2xl font-black text-white mt-2 mb-4">תעודת מהנדס הניתוב שלך מוכנה!</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Reflection Form -->
+                        <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 space-y-4">
+                            <h3 class="font-bold text-white text-base">רפלקציה עצמית למורה</h3>
+                            <p class="text-xs text-slate-400">השלם את המחשבות שלך על השיעור והמידע הזה יישלח למורה שלך בקליק.</p>
+                            
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-xs text-slate-300 mb-1">1. מהו ההבדל המרכזי בין ניתוב חד-כיווני (שבו רק צד אחד מכיר את הדרך) לדו-כיווני ברשת?</label>
+                                    <textarea id="reflection-q1" class="w-full bg-slate-950 border border-slate-800 rounded p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500" rows="2" placeholder="הסבר במילים שלך..."></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-300 mb-1">2. מדוע נתב לא מכיר באופן אוטומטי רשתות מרוחקות, למרות שהן מחוברות לנתב אחר שכן מחובר אליו?</label>
+                                    <textarea id="reflection-q2" class="w-full bg-slate-950 border border-slate-800 rounded p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500" rows="2" placeholder="הסבר בקצרה..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Share card and report exports -->
+                        <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-bold text-white text-base mb-2">שתף הצלחה עם החברים</h3>
+                                <p class="text-xs text-slate-400 mb-4">העתק את קוד ההישג שלך ושתף אותו כדי להראות שפתחת את נתיבי המידע בהצלחה!</p>
+                                
+                                <div class="bg-slate-950 p-3 rounded border border-slate-800 code-font text-xs flex justify-between items-center text-emerald-400">
+                                    <span id="share-code">NET-ACAD-CLASS6-PENDING</span>
+                                    <button onclick="copyShareCode()" class="text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-1">
+                                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                        <span>העתק</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 pt-6 border-t border-slate-800/80 space-y-3">
+                                <button onclick="exportTeacherReport()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-lg text-sm transition-all flex items-center justify-center gap-2">
+                                    <i data-lucide="download" class="w-4 h-4"></i>
+                                    <span>ייצא דוח מסכם למורה</span>
+                                </button>
+                                <p class="text-[10px] text-slate-400 text-center">בלחיצה כאן יורד קובץ טקסט פשוט שמכיל את התשובות שלך, שאותו תוכל לשלוח למורה.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-900 bg-slate-950 py-4 px-4 text-center">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+            <p>© 2026 NET_ACADEMY - הדרך שלך לרשתות ותקשורת מחשבים</p>
+            <div class="flex gap-4">
+                <span>שיעור 6 מתוך 10</span>
+                <span>•</span>
+                <span class="text-emerald-405 font-bold">RTL תומך באופן מלא</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification system toast -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 border border-emerald-500 text-white px-4 py-3 rounded-xl shadow-2xl z-50 transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3">
+        <i data-lucide="info" class="w-5 h-5 text-emerald-400" id="toast-icon"></i>
+        <span id="toast-message" class="text-sm"></span>
+    </div>
+
+    <!-- MAIN JAVASCRIPT LOGIC -->
+    <script>
+        // State management
+        let xp = 0;
+        let activeStep = 1;
+        let currentLevel = "שוליית נתבים";
+        let hasPassedSim = false;
+        let hasPassedAi = false;
+
+        const xpCounter = document.getElementById('xp-counter');
+        const userLevel = document.getElementById('user-level');
+        const levelBar = document.getElementById('level-bar');
+        const systemLog = document.getElementById('system-log');
+        const toastEl = document.getElementById('toast');
+        const toastMsg = document.getElementById('toast-message');
+
+        lucide.createIcons();
+
+        window.onload = function() {
+            loadSavedProgress();
+        };
+
+        function loadSavedProgress() {
+            const savedXp = localStorage.getItem('net_academy_l6_xp');
+            const savedStep = localStorage.getItem('net_academy_l6_step');
+            const savedLevel = localStorage.getItem('net_academy_l6_level');
+            const savedQ1 = localStorage.getItem('net_academy_l6_q1');
+            const savedQ2 = localStorage.getItem('net_academy_l6_q2');
+
+            if (savedXp) {
+                xp = parseInt(savedXp);
+                xpCounter.innerText = xp;
+            } else {
+                xp = 350; // default starting XP from Lesson 5
+                xpCounter.innerText = xp;
+            }
+
+            if (savedLevel) {
+                currentLevel = savedLevel;
+                userLevel.innerText = currentLevel;
+                updateLevelUI();
+            }
+
+            if (savedQ1) document.getElementById('reflection-q1').value = savedQ1;
+            if (savedQ2) document.getElementById('reflection-q2').value = savedQ2;
+
+            if (savedStep) {
+                switchStep(parseInt(savedStep));
+            } else {
+                switchStep(1);
+            }
+            addLog("התקדמות קודמת לשיעור 6 נטענה מהדפדפן.");
+        }
+
+        function saveProgress() {
+            localStorage.setItem('net_academy_l6_xp', xp);
+            localStorage.setItem('net_academy_l6_step', activeStep);
+            localStorage.setItem('net_academy_l6_level', currentLevel);
+            localStorage.setItem('net_academy_l6_q1', document.getElementById('reflection-q1').value);
+            localStorage.setItem('net_academy_l6_q2', document.getElementById('reflection-q2').value);
+        }
+
+        function resetProgress() {
+            if (confirm("האם ברצונך לאפס את התקדמות שיעור 6? כל הניקוד שהושג בשיעור יימחק.")) {
+                localStorage.removeItem('net_academy_l6_xp');
+                localStorage.removeItem('net_academy_l6_step');
+                localStorage.removeItem('net_academy_l6_level');
+                localStorage.removeItem('net_academy_l6_q1');
+                localStorage.removeItem('net_academy_l6_q2');
+                
+                xp = 350;
+                activeStep = 1;
+                hasPassedSim = false;
+                hasPassedAi = false;
+                currentLevel = "שוליית נתבים";
+
+                xpCounter.innerText = xp;
+                userLevel.innerText = currentLevel;
+                levelBar.style.width = "40%";
+                
+                document.getElementById('reflection-q1').value = "";
+                document.getElementById('reflection-q2').value = "";
+                
+                document.getElementById('btn-to-step-4').disabled = true;
+                document.getElementById('btn-to-step-5').disabled = true;
+                document.getElementById('sim-feedback').classList.add('hidden');
+                document.getElementById('ai-bonus-alert').classList.add('hidden');
+                
+                // Reset Simulator dropdowns
+                document.getElementById('r1-dest').value = "none";
+                document.getElementById('r1-hop').value = "none";
+                document.getElementById('r2-dest').value = "none";
+                document.getElementById('r2-hop').value = "none";
+
+                // Reset dot animation
+                const dot = document.getElementById('packet-flow-dot');
+                dot.className = "absolute w-3.5 h-3.5 bg-yellow-400 rounded-full blur-[1px] hidden";
+
+                switchStep(1);
+                showToast("ההתקדמות בשיעור 6 אופסה.");
+                addLog("כל התקדמות המשתמש בשיעור זה אופסה.");
+            }
+        }
+
+        function switchStep(stepNum) {
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`step-${i}`).classList.add('hidden');
+                const btn = document.getElementById(`btn-step-${i}`);
+                if (btn) {
+                    btn.className = "w-full text-right flex items-center justify-between p-3 rounded-lg bg-slate-900/40 border border-slate-800 text-slate-400 hover:bg-slate-900 hover:text-slate-200 transition-all";
+                }
+            }
+
+            document.getElementById(`step-${stepNum}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`btn-step-${stepNum}`);
+            if (activeBtn) {
+                activeBtn.className = "w-full text-right flex items-center justify-between p-3 rounded-lg bg-emerald-950/30 border border-emerald-500/40 text-emerald-300 transition-all font-bold";
+            }
+
+            activeStep = stepNum;
+            saveProgress();
+            addLog(`מעבר לשלב ${stepNum}.`);
+        }
+
+        function addLog(text) {
+            const time = new Date().toLocaleTimeString('he-IL', { hour12: false });
+            systemLog.innerHTML += `<p>[${time}] ${text}</p>`;
+            systemLog.scrollTop = systemLog.scrollHeight;
+        }
+
+        function showToast(message) {
+            toastMsg.innerText = message;
+            toastEl.classList.remove('translate-y-20', 'opacity-0');
+            toastEl.classList.add('translate-y-0', 'opacity-100');
+            setTimeout(() => {
+                toastEl.classList.remove('translate-y-0', 'opacity-100');
+                toastEl.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function addXP(amount) {
+            xp += amount;
+            xpCounter.innerText = xp;
+            
+            if (xp >= 550) {
+                currentLevel = "נווט רשתות מומחה";
+                levelBar.style.width = "100%";
+            } else if (xp >= 450) {
+                currentLevel = "מנתח נתבים מתקדם";
+                levelBar.style.width = "75%";
+            } else {
+                currentLevel = "שוליית נתבים";
+                levelBar.style.width = "50%";
+            }
+            
+            userLevel.innerText = currentLevel;
+            updateLevelUI();
+            saveProgress();
+            showToast(`נוספו +${amount} נקודות XP!`);
+        }
+
+        function updateLevelUI() {
+            document.getElementById('share-code').innerText = `NET-ACAD-L6-XP${xp}-${currentLevel.replace(/ /g, '_')}`;
+        }
+
+        // STEP 1: Scenario response
+        function answerScenario(choice) {
+            const feedback = document.getElementById('scenario-feedback');
+            feedback.classList.remove('hidden', 'bg-red-950/40', 'text-red-300', 'bg-emerald-950/40', 'text-emerald-300');
+
+            if (choice === 2) {
+                feedback.className += ' bg-emerald-950/40 text-emerald-300 p-3 rounded-lg text-xs';
+                feedback.innerHTML = `🌟 <b>תשובה מבריקה!</b> ניתוב ברשתות תמיד עובד כמו שיט באוקיינוס – הוא חד-כיווני לחלוטין. אם המפה של נתב א' מורה לו איך להגיע לרשת ג', אך לנתב ב' אין מפה שמורה לו איך לחזור לרשת א' – חבילת המענה (Reply) תיזרק לפח והפינג ייכשל!`;
+                addXP(25);
+                addLog("מענה נכון על אתגר ניתוב חד כיווני.");
+            } else {
+                feedback.className += ' bg-red-950/40 text-red-300 p-3 rounded-lg text-xs';
+                feedback.innerHTML = `❌ <b>לא מדויק.</b> במכשירי שכבה 3 (נתבים) אין זיכרון דרכים אוטומטי של "הדרך שבה החבילה הגיעה". כל חבילה נבדקת בנפרד, ולכן ניתוב חד-כיווני תמיד יגרום לשגיאה בדרך חזרה.`;
+                addXP(5);
+            }
+        }
+
+        // STEP 3: Routing simulator engine
+        function runRoutingSimulator() {
+            const r1Dest = document.getElementById('r1-dest').value;
+            const r1Hop = document.getElementById('r1-hop').value;
+            const r2Dest = document.getElementById('r2-dest').value;
+            const r2Hop = document.getElementById('r2-hop').value;
+
+            addLog(`מנתח הגדרות ניתוב: R1 [${r1Dest} ➔ ${r1Hop}] | R2 [${r2Dest} ➔ ${r2Hop}]`);
+
+            const feedback = document.getElementById('sim-feedback');
+            feedback.classList.remove('hidden', 'bg-red-950/40', 'text-red-300', 'bg-emerald-950/40', 'text-emerald-300');
+
+            // Logical check
+            const isR1Ok = (r1Dest === '172.16.1.0' && r1Hop === '10.0.0.2');
+            const isR2Ok = (r2Dest === '192.168.1.0' && r2Hop === '10.0.0.1');
+
+            if (isR1Ok && isR2Ok) {
+                // Animate packet flowing forward and backward
+                const dot = document.getElementById('packet-flow-dot');
+                dot.classList.remove('hidden');
+                addLog("[PC A] שולח פריים ICMP Echo Request...");
+                
+                dot.className = "absolute w-3.5 h-3.5 bg-yellow-400 rounded-full blur-[1px] hop-animate";
+                
+                setTimeout(() => {
+                    addLog("[Router 1] חבילה התקבלה. היעד 172.16.1.20 נמצא בניתוב דרך 10.0.0.2.");
+                    addLog("[Router 2] חבילה התקבלה. היעד 172.16.1.20 מחובר אליי פיזית ישירות.");
+                    addLog("[PC B] פריים התקבל בהצלחה! מייצר פריים מענה (Echo Reply)...");
+
+                    setTimeout(() => {
+                        dot.className = "absolute w-3.5 h-3.5 bg-yellow-400 rounded-full blur-[1px] hop-animate-reverse";
+                        
+                        setTimeout(() => {
+                            addLog("[Router 2] תשובה התקבלה. היעד 192.168.1.10 נמצא בניתוב דרך 10.0.0.1.");
+                            addLog("[Router 1] תשובה התקבלה. היעד 192.168.1.10 מחובר אליי פיזית ישירות.");
+                            addLog("[PC A] התקבל ICMP Echo Reply מ-172.16.1.20! ה-Ping הושלם בהצלחה!");
+                            
+                            dot.classList.add('hidden');
+                            showFinalFeedback(true);
+                        }, 2500);
+                    }, 500);
+
+                }, 2500);
+
+            } else {
+                showFinalFeedback(false, isR1Ok, isR2Ok);
+            }
+        }
+
+        function showFinalFeedback(success, isR1Ok, isR2Ok) {
+            const feedback = document.getElementById('sim-feedback');
+            feedback.classList.remove('hidden', 'bg-red-950/40', 'text-red-300', 'bg-emerald-950/40', 'text-emerald-300');
+
+            if (success) {
+                feedback.className += ' bg-emerald-950/40 text-emerald-300';
+                feedback.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="text-xl">🌟</span>
+                        <div>
+                            <p class="font-bold">הניתוב הסטטי הדו-כיווני הופעל בהצלחה!</p>
+                            <p class="text-[11px] opacity-90">כל הכבוד! הגדרת את שתי מפות הדרכים בצורה מבריקה. כעת המידע יודע למצוא את הנתיב שלו מהרשת הירוקה של PC A, דרך צינור ה-WAN, ישירות לרשת המרוחקת של PC B - והכי חשוב, גם הדרך חזרה הביתה סלולה ומאובטחת!</p>
+                        </div>
+                    </div>
+                `;
+                if (!hasPassedSim) {
+                    addXP(50);
+                    hasPassedSim = true;
+                }
+                document.getElementById('btn-to-step-4').disabled = false;
+                addLog("סימולציית הניתוב הסתיימה בהצלחה מוחלטת.");
+            } else {
+                feedback.className += ' bg-red-950/40 text-red-300';
+                let errors = [];
+                if (!isR1Ok) errors.push("ההגדרות של Router 1 שגויות. ודא כי רשת היעד היא הרשת של PC B (172.16.1.0) ושה-Next Hop הוא פורט הכניסה של הנתב השכן (10.0.0.2).");
+                if (!isR2Ok) errors.push("ההגדרות של Router 2 שגויות. ודא כי רשת היעד היא הרשת של PC A (192.168.1.0) ושה-Next Hop הוא פורט הכניסה של הנתב השכן (10.0.0.1).");
+
+                feedback.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span>❌</span>
+                        <div>
+                            <p class="font-bold">נכשלה בדיקת הניתוב! חבילות המידע אבדו בדרך.</p>
+                            <ul class="list-disc pr-4 text-[11px] opacity-90 space-y-1 mt-1">
+                                ${errors.map(err => `<li>${err}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                addLog("שגיאה: חבילת המידע נזרקה לפח עקב חוסר בנתיב מוגדר.");
+            }
+        }
+
+        // STEP 4: Cisco AI Auditor Terminal Logic
+        function runCiscoAuditor() {
+            const command = document.getElementById('cli-command-input').value.trim();
+            const messagesArea = document.getElementById('chat-messages');
+
+            if (!command) {
+                messagesArea.innerHTML += `
+                    <div class="text-red-400 font-bold p-2 bg-red-950/20 border border-red-900/40 rounded">
+                        ⚠️ שגיאה: עליך להקליד פקודת CLI בתיבת הטקסט לפני הרצת ה-AI Auditor!
+                    </div>
+                `;
+                messagesArea.scrollTop = messagesArea.scrollHeight;
+                return;
+            }
+
+            addLog("שולח פקודת טרמינל לניתוח ה-AI Auditor...");
+            messagesArea.innerHTML += `
+                <div class="bg-emerald-900 text-white p-2.5 rounded max-w-[90%] self-end text-xs mb-2">
+                    <b>הגשתי פקודה:</b><br>
+                    <code>${command}</code>
+                </div>
+            `;
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+
+            const typingId = "typing-" + Date.now();
+            messagesArea.innerHTML += `
+                <div id="${typingId}" class="text-slate-500 italic animate-pulse">
+                    ה-AI Auditor בודק את פקודת ה-Cisco IOS שלך...
+                </div>
+            `;
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+
+            setTimeout(() => {
+                document.getElementById(typingId).remove();
+
+                // Simple simulated NLP parsing for Cisco Command
+                const cleanCmd = command.toLowerCase().replace(/\s+/g, ' ');
+                const parts = cleanCmd.split(' ');
+
+                let botResponse = "";
+                let isPassed = false;
+
+                if (parts[0] !== 'ip' || parts[1] !== 'route') {
+                    botResponse = `❌ <b>שגיאת סינטקס קשה (Invalid Command):</b> פקודות ניתוב סטטי בסיסקו חייבות להתחיל במילים <code>ip route</code>. המערכת לא זיהתה את הפקודה שלך.`;
+                } else if (parts.length < 5) {
+                    botResponse = `❌ <b>פרמטרים חסרים (Incomplete Command):</b> פקודת <code>ip route</code> מחייבת 3 פרמטרים מרכזיים: רשת יעד, מסכת רשת וכתובת Next Hop. למשל: <br><code>ip route 172.16.1.0 255.255.255.0 10.0.0.2</code>`;
+                } else {
+                    const targetNet = parts[2];
+                    const subnetMask = parts[3];
+                    const nextHop = parts[4];
+
+                    const isTargetOk = (targetNet === '172.16.1.0');
+                    const isMaskOk = (subnetMask === '255.255.255.0');
+                    const isHopOk = (nextHop === '10.0.0.2');
+
+                    if (isTargetOk && isMaskOk && isHopOk) {
+                        botResponse = `🎯 <b>הבדיקה עברה בהצלחה! פקודה תקינה לחלוטין!</b><br><br>
+                        <b>ניתוח פקודה:</b><br>
+                        - הגדרת נכון את רשת היעד <code>${targetNet}</code><br>
+                        - מסכת הרשת תקינה <code>${subnetMask}</code> ומייצגת Class C (/24)<br>
+                        - ה-Next Hop הוגדר כראוי על כתובת הכניסה של הנתב השכן <code>${nextHop}</code>.<br><br>
+                        מערכת סיסקו הטמיעה את הפקודה בטבלת ה-S (Static Route) של הנתב בהצלחה!`;
+                        isPassed = true;
+                    } else {
+                        let errorDetails = [];
+                        if (!isTargetOk) errorDetails.push(`רשת היעד שהגדרת (<code>${targetNet}</code>) אינה נכונה. עליך לנתב לרשת הקצה המרוחקת של PC B (172.16.1.0).`);
+                        if (!isMaskOk) errorDetails.push(`מסכת הרשת (<code>${subnetMask}</code>) שגויה. לרשת Class C נשתמש במסכה 255.255.255.0.`);
+                        if (!isHopOk) errorDetails.push(`שער ה-Next Hop שהגדרת (<code>${nextHop}</code>) שגוי. עליך לכוון לכתובת ה-IP של פורט הכניסה של Router 2 (שהיא 10.0.0.2).`);
+
+                        botResponse = `⚠️ <b>ביקורת ה-AI זיהתה שגיאות בהגדרת הרשת:</b><br><ul class='list-disc pr-4 mt-2 space-y-1'>${errorDetails.map(e => `<li>${e}</li>`).join('')}</ul>`;
+                    }
+                }
+
+                messagesArea.innerHTML += `
+                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 max-w-[90%] self-start text-xs text-slate-300">
+                        <span class="text-[10px] font-bold text-emerald-400 block mb-1">CISCO_AI_AUDITOR // </span>
+                        ${botResponse}
+                    </div>
+                `;
+                messagesArea.scrollTop = messagesArea.scrollHeight;
+
+                if (isPassed && !hasPassedAi) {
+                    hasPassedAi = true;
+                    addXP(95);
+                    document.getElementById('ai-bonus-alert').classList.remove('hidden');
+                    document.getElementById('btn-to-step-5').disabled = false;
+                    addLog("מבקר ה-Cisco AI אישר את פקודת הטרמינל שנכתבה.");
+                }
+
+            }, 1800);
+        }
+
+        // Copy Share Code
+        function copyShareCode() {
+            const code = document.getElementById('share-code').innerText;
+            const tempInput = document.createElement("input");
+            tempInput.value = code;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            showToast("קוד ההישג הועתק בהצלחה! שלח לחבר.");
+            addLog("קוד שיתוף הועתק ללוח.");
+        }
+
+        // Export Report to Teacher
+        function exportTeacherReport() {
+            const q1 = document.getElementById('reflection-q1').value;
+            const q2 = document.getElementById('reflection-q2').value;
+            
+            if (!q1 || !q2) {
+                alert("נא למלא את שתי שאלות הרפלקציה לפני שמייצאים דוח למורה!");
+                return;
+            }
+
+            const reportText = `
+=============================================
+דוח מסכם - שיעור 6: ניתוב בסיסי וניתוב סטטי
+=============================================
+שם התלמיד: [נא להקליד שם מלא כאן]
+דירוג XP סופי: ${xp} XP
+דרגה נוכחית: ${currentLevel}
+
+תשובות לרפלקציה:
+---------------------------------------------
+1. מהו ההבדל המרכזי בין ניתוב חד-כיווני לדו-כיווני ברשת?
+תשובה: ${q1}
+
+2. מדוע נתב לא מכיר באופן אוטומטי רשתות מרוחקות?
+תשובה: ${q2}
+
+---------------------------------------------
+מיוצר עבור מורה תקשורת ורשתות - NET_ACADEMY
+=============================================
+            `;
+
+            const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `NET_ACADEMY_Lesson6_Report.txt`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast("דוח פעילות הורד! העבר אותו למורה שלך.");
+            addLog("דוח פעילות הופק והורד למחשב המשתמש.");
+        }
+    </script>
+
+<!-- כפתור עזרה צף מטורלל בפינה התחתונה -->
+<div class="fixed bottom-6 left-6 z-50 no-print">
+    <button id="openHelpModalBtn" class="crazy-shake-hover flex items-center gap-3 bg-gradient-to-r from-purple-600 via-fuchsia-500 to-pink-500 hover:from-purple-500 hover:to-pink-400 text-white font-black py-3 px-5 rounded-full shadow-[0_0_25px_rgba(217,70,239,0.5)] border-2 border-fuchsia-300/40 transition-all duration-300 transform hover:scale-110 active:scale-95 group">
+        <!-- אוואטר בתוך הלחצן הצף -->
+        <div class="relative w-8 h-8 rounded-full overflow-hidden border-2 border-white/80 shadow-inner">
+            <img src="https://lh3.googleusercontent.com/d/1fzqv93VKIW_VT8-e1HdJxBmbU2sFnwlb" alt="Cyber Bot Avatar" class="w-full h-full object-cover">
+        </div>
+        <span class="tracking-wide drop-shadow text-sm">בוט עזרה מטורלל 🤖</span>
+    </button>
+</div>
+
+<!-- חלונית עזרה צפה מטורללת (Modal) -->
+<div id="helpModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-[100] hidden flex items-center justify-center p-4 transition-all duration-300">
+    <div class="bg-gradient-to-b from-slate-900 via-purple-950/40 to-slate-950 border-2 border-fuchsia-500/50 rounded-3xl p-6 max-w-sm w-full text-center relative shadow-[0_0_50px_rgba(168,85,247,0.3)] transform scale-95 transition-all duration-300 overflow-hidden" id="helpModalContent">
+        
+        <!-- אלמנט קישוט רקע זוהר -->
+        <div class="absolute -top-16 -left-16 w-32 h-32 bg-fuchsia-500/20 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute -bottom-16 -right-16 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl pointer-events-none"></div>
+
+        <!-- כפתור סגירה X -->
+        <button id="closeHelpModalBtn" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors p-1.5 rounded-full hover:bg-slate-800/80 border border-slate-700/50 z-10">
+            <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        
+        <!-- תמונת האוואטר המטורלל בחלונית -->
+        <div class="relative w-24 h-24 mx-auto mb-4 animate-float">
+            <div class="absolute inset-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-600 blur-md opacity-80 animate-pulse"></div>
+            <img src="https://lh3.googleusercontent.com/d/1fzqv93VKIW_VT8-e1HdJxBmbU2sFnwlb" alt="Cyber Bot Avatar" class="relative w-24 h-24 rounded-full object-cover border-4 border-fuchsia-400 shadow-2xl mx-auto">
+            <span class="absolute bottom-0 right-0 w-5 h-5 bg-emerald-400 border-2 border-slate-900 rounded-full animate-ping"></span>
+            <span class="absolute bottom-0 right-0 w-5 h-5 bg-emerald-500 border-2 border-slate-900 rounded-full"></span>
+        </div>
+
+        <h3 class="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 to-purple-200 mb-1">
+            תקוע בניתוב הסטטי? 🚀
+        </h3>
+        <p class="text-xs font-bold text-fuchsia-300/80 mb-3 uppercase tracking-wider">CYBER HELPER V2.0</p>
+        
+        <p class="text-xs text-slate-300 mb-6 leading-relaxed bg-slate-950/60 p-3 rounded-xl border border-purple-500/20 text-right">
+            הבוט המטורלל מוכן ומזומן לחפור לך על טבלאות ניתוב, CLI, Next Hop ולפתור לך כל בעיה ברשת! בלחיצה אחת אתה אצלו בשיחה ישירה.
+        </p>
+        
+        <!-- כפתור הפניה לקישור -->
+        <a href="https://gemini.google.com/gem/167016ac4a4b/66c3b83daa7940ef?usp=sharing" target="_blank" class="crazy-shake-hover w-full flex items-center justify-center gap-2 bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-400 hover:to-purple-500 text-white font-black py-3.5 px-4 rounded-2xl transition-all duration-200 shadow-lg shadow-fuchsia-500/30 border border-fuchsia-300/30 text-sm">
+            <span>שיגור לבוט העזרה! ⚡</span>
+            <i data-lucide="external-link" class="w-4 h-4"></i>
+        </a>
+    </div>
+</div>
+
+<!-- סקריפט להפעלת החלונית -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('helpModal');
+        const modalContent = document.getElementById('helpModalContent');
+        const openBtn = document.getElementById('openHelpModalBtn');
+        const closeBtn = document.getElementById('closeHelpModalBtn');
+
+        if(openBtn && modal && modalContent && closeBtn) {
+            // פתיחה
+            openBtn.addEventListener('click', () => {
+                modal.classList.remove('hidden');
+                setTimeout(() => modalContent.classList.remove('scale-95'), 10);
+            });
+
+            // סגירה בלחיצה על ה-X
+            closeBtn.addEventListener('click', () => {
+                modalContent.classList.add('scale-95');
+                setTimeout(() => modal.classList.add('hidden'), 150);
+            });
+
+            // סגירה בלחיצה מחוץ לחלונית
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modalContent.classList.add('scale-95');
+                    setTimeout(() => modal.classList.add('hidden'), 150);
+                }
+            });
+        }
+    });
+</script>
+
+</body>
+</html>
