@@ -49,21 +49,21 @@
             border-radius: 0.75rem;
         }
         
-        /* Floating Bot Widget Styling */
+        /* Compact Floating Bot Widget Styling */
         .bot-widget {
             background: #0b192c;
-            border: 2px solid #1e293b;
-            border-radius: 1.25rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            border: 1px solid #334155;
+            border-radius: 0.85rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
             color: #ffffff;
         }
         
         .pulse-online {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             background-color: #10b981;
             border-radius: 50%;
-            box-shadow: 0 0 8px #10b981;
+            box-shadow: 0 0 6px #10b981;
             animation: pulse-glow 1.5s infinite;
         }
         @keyframes pulse-glow {
@@ -73,8 +73,8 @@
 
         @keyframes crazy-bounce {
             0%, 100% { transform: translateY(0) rotate(0deg); }
-            25% { transform: translateY(-6px) rotate(-3deg); }
-            75% { transform: translateY(-2px) rotate(3deg); }
+            25% { transform: translateY(-3px) rotate(-1.5deg); }
+            75% { transform: translateY(-1px) rotate(1.5deg); }
         }
         .crazy-hover:hover {
             animation: crazy-bounce 0.5s ease-in-out infinite;
@@ -152,7 +152,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl w-full mx-auto px-4 py-8 flex-grow">
 
-        <!-- SECTION 0: ROUTING BASICS, TABLE & STATIC ROUTING (NEW EXTENSION) -->
+        <!-- SECTION 0: ROUTING BASICS, TABLE & STATIC ROUTING -->
         <div id="section-basics" class="space-y-6">
             
             <!-- Hero Title Card -->
@@ -701,10 +701,10 @@
 
         </div>
 
-        <!-- SECTION 4: SUMMARY, IMPORTANT COMMANDS & REPORT (EXPANDED) -->
+        <!-- SECTION 4: SUMMARY, IMPORTANT COMMANDS & REPORT -->
         <div id="section-summary" class="space-y-6 hidden">
             
-            <!-- NEW: Essential Commands Cheat Sheet Card -->
+            <!-- Essential Commands Cheat Sheet Card -->
             <div class="card-light p-6 md:p-8 border-t-4 border-t-red-500">
                 <span class="text-xs font-bold text-red-500 uppercase tracking-wider block mb-1">Cisco CLI Cheat-Sheet</span>
                 <h3 class="text-2xl font-black text-slate-900 mb-4">פקודות חשובות בנושא ניתוב</h3>
@@ -786,6 +786,48 @@
 
     </main>
 
+    <!-- COMPACT FLOATING BOT WIDGET -->
+    <div class="fixed bottom-4 left-4 z-50">
+        <div class="bot-widget w-56 md:w-64 p-2.5 crazy-hover transition-all duration-300 relative shadow-xl">
+            
+            <!-- Compact Header bar -->
+            <div class="flex items-center justify-between border-b border-slate-800/80 pb-1.5 mb-2">
+                <div class="flex items-center gap-1.5">
+                    <div class="pulse-online"></div>
+                    <span class="code-font text-[9px] text-slate-300 font-bold tracking-tight uppercase">DAN-GPT // ONLINE</span>
+                </div>
+                <i data-lucide="sparkles" class="w-3 h-3 text-amber-400"></i>
+            </div>
+
+            <!-- Compact Bot Body Content -->
+            <div class="flex items-center gap-2 mb-2">
+                <img src="https://lh3.googleusercontent.com/d/1fzqv93VKIW_VT8-e1HdJxBmbU2sFnwlb" alt="DAN-GPT" class="w-8 h-8 rounded-full object-cover border border-sky-400 shadow-sm flex-shrink-0">
+                <div>
+                    <h4 class="font-bold text-xs text-white leading-tight">
+                        שלום תלמידים 🖐️
+                    </h4>
+                    <p class="text-[10px] text-slate-300 leading-tight">
+                        עוזר השיעור והפרויקט
+                    </p>
+                </div>
+            </div>
+
+            <!-- Compact Tag Badges -->
+            <div class="flex flex-wrap gap-1 mb-2.5">
+                <span class="text-[8px] bg-slate-800/90 text-slate-300 px-1.5 py-0.5 rounded code-font">OSPF</span>
+                <span class="text-[8px] bg-slate-800/90 text-slate-300 px-1.5 py-0.5 rounded code-font">Static</span>
+                <span class="text-[8px] bg-slate-800/90 text-slate-300 px-1.5 py-0.5 rounded code-font">CLI</span>
+            </div>
+
+            <!-- Compact Action Link Button -->
+            <a href="https://gemini.google.com/gem/167016ac4a4b/66c3b83daa7940ef?usp=sharing" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold py-1.5 px-2 rounded text-[10px] flex items-center justify-center gap-1.5 transition-all border border-emerald-400/30">
+                <span>connect --gem dan-gpt</span>
+                <i data-lucide="external-link" class="w-3 h-3"></i>
+            </a>
+
+        </div>
+    </div>
+
     <!-- FOOTER -->
     <footer class="bg-white border-t border-slate-200 py-4 px-4 text-center mt-12">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-slate-500">
@@ -793,56 +835,6 @@
             <p class="font-semibold text-slate-700">session: רכיבי רשת ותקשורת // אקדמיית האחווואים // מודל OSI & PDU // בהצלחה 💪</p>
         </div>
     </footer>
-
-
-    <!-- FLOATING CRAZY BOT WIDGET (MOVED UP to bottom-24 / bottom-28 so it won't block bottom content) -->
-    <div class="fixed bottom-24 md:bottom-28 left-6 z-50">
-        <div class="bot-widget w-72 md:w-80 p-4 crazy-hover transition-all duration-300 relative shadow-2xl">
-            
-            <!-- Top Header bar of the bot widget -->
-            <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
-                <div class="flex items-center gap-2">
-                    <div class="pulse-online"></div>
-                    <span class="code-font text-[10px] text-slate-300 font-bold tracking-wider uppercase">NODE: DAN-GPT // ONLINE</span>
-                </div>
-                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
-            </div>
-
-            <!-- Bot Body Content -->
-            <div class="flex items-start gap-3 mb-3">
-                <div class="relative flex-shrink-0">
-                    <img src="https://lh3.googleusercontent.com/d/1fzqv93VKIW_VT8-e1HdJxBmbU2sFnwlb" alt="DAN-GPT Avatar" class="w-12 h-12 rounded-full object-cover border-2 border-sky-400 shadow-md">
-                </div>
-
-                <div>
-                    <h4 class="font-black text-sm text-white flex items-center gap-1">
-                        <span>שלום תלמידים</span> 🖐️
-                    </h4>
-                    <p class="text-[11px] text-slate-300 leading-snug mt-0.5">
-                        אני דן GPT, עוזר השיעור והפרויקט שלכם. אפשר להיעזר בי ב:
-                    </p>
-                </div>
-            </div>
-
-            <!-- Tags/Pills grid -->
-            <div class="flex flex-wrap gap-1.5 mb-4">
-                <span class="text-[9px] bg-slate-800/80 border border-slate-700/60 text-slate-300 px-2 py-0.5 rounded-md code-font">Routing Table</span>
-                <span class="text-[9px] bg-slate-800/80 border border-slate-700/60 text-slate-300 px-2 py-0.5 rounded-md code-font">Static Route</span>
-                <span class="text-[9px] bg-slate-800/80 border border-slate-700/60 text-slate-300 px-2 py-0.5 rounded-md code-font">OSPF</span>
-                <span class="text-[9px] bg-slate-800/80 border border-slate-700/60 text-slate-300 px-2 py-0.5 rounded-md code-font">Longest Prefix</span>
-                <span class="text-[9px] bg-slate-800/80 border border-slate-700/60 text-slate-300 px-2 py-0.5 rounded-md code-font">CLI Commands</span>
-                <span class="text-[9px] bg-slate-800/80 border border-slate-700/60 text-slate-300 px-2 py-0.5 rounded-md code-font">Distance Vector</span>
-            </div>
-
-            <!-- Crazy Action Button to open Gemini Link -->
-            <a href="https://gemini.google.com/gem/167016ac4a4b/66c3b83daa7940ef?usp=sharing" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold py-2 px-3 rounded-lg text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-900/40 border border-emerald-400/30">
-                <span>connect --gem dan-gpt $</span>
-                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-            </a>
-
-        </div>
-    </div>
-
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
