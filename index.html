@@ -129,6 +129,27 @@
             border: 1px solid #cbd5e1;
             font-weight: 600;
         }
+
+        /* Interactive Routing Table Tooltip Styles */
+        .route-row {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .route-row:hover {
+            background-color: #f5eedc !important;
+            border-color: #d97706 !important;
+        }
+        .route-explanation {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, opacity 0.3s ease;
+            opacity: 0;
+        }
+        .route-row:hover + .route-explanation,
+        .route-explanation:hover {
+            max-height: 300px;
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between relative bg-slate-50">
@@ -139,13 +160,12 @@
             
             <div class="flex items-center gap-3">
                 <div class="flex items-center justify-center p-1">
-                    <!-- Avatar 30% larger (w-13 h-13 / 3.25rem) -->
                     <img src="https://lh3.googleusercontent.com/d/1t9QaPCKLvtAhWncetA83ALY8EIvpnFte" 
                          alt="Avatar" 
                          class="w-[3.25rem] h-[3.25rem] rounded-full spinning-avatar object-cover">
                 </div>
                 <div>
-                    <h1 class="font-black text-xl text-slate-800 tracking-tight">האקדמיה לרשתות <span class="text-red-500">// שיעור מקיף בניתוב</span></h1>
+                    <h1 class="font-black text-xl text-slate-800 tracking-tight">האקדמיה לרשתות <strong class="text-red-500">// שיעור מקיף בניתוב</strong></h1>
                     <p class="text-xs font-semibold text-slate-500">טבלת ניתוב, החלטות ניתוב, ניתוב סטטי ופרוטוקולים דינמיים</p>
                 </div>
             </div>
@@ -154,27 +174,27 @@
             <nav class="flex flex-wrap gap-2 justify-center">
                 <button onclick="switchTab('basics')" id="tab-basics" class="tab-btn tab-btn-active">
                     <i data-lucide="table" class="w-4 h-4"></i>
-                    <span>טבלת ניתוב וניתוב סטטי</span>
+                    <div>טבלת ניתוב וניתוב סטטי</div>
                 </button>
                 <button onclick="switchTab('intro')" id="tab-intro" class="tab-btn tab-btn-inactive">
                     <i data-lucide="compass" class="w-4 h-4"></i>
-                    <span>ניתוב דינמי והשוואה</span>
+                    <div>ניתוב דינמי והשוואה</div>
                 </button>
                 <button onclick="switchTab('ospf')" id="tab-ospf" class="tab-btn tab-btn-inactive">
                     <i data-lucide="cpu" class="w-4 h-4"></i>
-                    <span>העמקה ב-<span class="english-badge">OSPF</span></span>
+                    <div>העמקה ב-<div class="english-badge">OSPF</div></div>
                 </button>
                 <button onclick="switchTab('exercise')" id="tab-exercise" class="tab-btn tab-btn-inactive">
                     <i data-lucide="award" class="w-4 h-4"></i>
-                    <span>תרגיל מעשי: <span class="english-badge">RIP vs OSPF</span></span>
+                    <div>תרגיל מעשי: <div class="english-badge">RIP vs OSPF</div></div>
                 </button>
                 <button onclick="switchTab('practice')" id="tab-practice" class="tab-btn tab-btn-inactive">
                     <i data-lucide="pen-tool" class="w-4 h-4"></i>
-                    <span>תרגול ורפלקציה (10 תרגילים)</span>
+                    <div>תרגול ורפלקציה (10 תרגילים)</div>
                 </button>
                 <button onclick="switchTab('summary')" id="tab-summary" class="tab-btn tab-btn-inactive">
                     <i data-lucide="file-text" class="w-4 h-4"></i>
-                    <span>דוח סיכום ופקודות</span>
+                    <div>דוח סיכום ופקודות</div>
                 </button>
             </nav>
 
@@ -190,12 +210,12 @@
             <div class="card-light p-6 md:p-8 bg-gradient-to-r from-white via-slate-50 to-red-50/30">
                 <div class="flex items-center gap-2 text-red-600 font-bold text-xs uppercase tracking-widest mb-2">
                     <i data-lucide="route" class="w-4 h-4"></i>
-                    <span>יסודות התקשורת - שכבה 3 (<span class="english-badge">Network Layer</span>)</span>
+                    <div>יסודות התקשורת - שכבה 3 (<div class="english-badge">Network Layer</div>)</div>
                 </div>
-                <h2 class="text-2xl md:text-3xl font-black text-slate-900 mb-3">מהו ניתוב (<span class="english-badge">Routing</span>) ואיך נתב מקבל החלטות?</h2>
+                <h2 class="text-2xl md:text-3xl font-black text-slate-900 mb-3">מהו ניתוב (<div class="english-badge">Routing</div>) ואיך נתב מקבל החלטות?</h2>
                 <p class="text-slate-600 leading-relaxed text-base md:text-lg">
-                    <strong>ניתוב</strong> הוא התהליך שבו נתב (<span class="english-badge">Router</span>) מקבל חבילת מידע (<span class="english-badge">IP Packet</span>) ממשק אחד ומעביר אותה לממשק היציאה המתאים בדרך לשרת או מחשב היעד ברשת אחרת.
-                    כדי לעשות זאת, הנתב נעזר ב-<strong>טבלת הניתוב (<span class="english-badge">Routing Table</span>)</strong> – "מפת דרכים" המוחזקת בזיכרון ה-<span class="english-badge">RAM</span> שלו.
+                    <strong>ניתוב</strong> הוא התהליך שבו נתב (<div class="english-badge">Router</div>) מקבל חבילת מידע (<div class="english-badge">IP Packet</div>) ממשק אחד ומעביר אותה לממשק היציאה המתאים בדרך לשרת או מחשב היעד ברשת אחרת.
+                    כדי לעשות זאת, הנתב נעזר ב-<strong>טבלת הניתוב (<div class="english-badge">Routing Table</div>)</strong> – "מפת דרכים" המוחזקת בזיכרון ה-<div class="english-badge">RAM</div> שלו.
                 </p>
             </div>
 
@@ -204,7 +224,7 @@
                 <div class="card-light p-6 border-t-4 border-t-sky-500">
                     <div class="flex justify-between items-start mb-4">
                         <div>
-                            <span class="text-xs font-bold text-sky-600 uppercase tracking-wider block">מבנה הנתונים</span>
+                            <div class="text-xs font-bold text-sky-600 uppercase tracking-wider block">מבנה הנתונים</div>
                             <h3 class="text-2xl font-bold text-slate-900">אנטומיה של טבלת ניתוב</h3>
                         </div>
                         <div class="p-2 bg-sky-50 rounded-xl text-sky-600">
@@ -218,16 +238,16 @@
 
                     <div class="space-y-3 text-sm md:text-base">
                         <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
-                            <strong class="text-slate-900">1. רשת היעד (<span class="english-badge">Destination Subnet</span>):</strong> כתובת ה-<span class="english-badge">IP</span> ומסכת רשת היעד.
+                            <strong class="text-slate-900">1. רשת היעד (<div class="english-badge">Destination Subnet</div>):</strong> כתובת ה-<div class="english-badge">IP</div> ומסכת רשת היעד.
                         </div>
                         <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
-                            <strong class="text-slate-900">2. הצעד הבא (<span class="english-badge">Next-Hop IP</span>) / ממשק יציאה (<span class="english-badge">Exit Interface</span>):</strong> לאן לשלוח את החבילה.
+                            <strong class="text-slate-900">2. הצעד הבא (<div class="english-badge">Next-Hop IP</div>) / ממשק יציאה (<div class="english-badge">Exit Interface</div>):</strong> לאן לשלוח את החבילה.
                         </div>
                         <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
-                            <strong class="text-slate-900">3. מקור המסלול (<span class="english-badge">Prefix Code</span>):</strong> מאיפה הנתב למד את הדרך (<code class="font-bold text-emerald-600 code-font" dir="ltr">C</code>=מחובר, <code class="font-bold text-blue-600 code-font" dir="ltr">S</code>=סטטי, <code class="font-bold text-red-600 code-font" dir="ltr">O</code>=OSPF).
+                            <strong class="text-slate-900">3. מקור המסלול (<div class="english-badge">Prefix Code</div>):</strong> מאיפה הנתב למד את הדרך (<code class="font-bold text-emerald-600 code-font" dir="ltr">C</code>=מחובר, <code class="font-bold text-blue-600 code-font" dir="ltr">S</code>=סטטי, <code class="font-bold text-red-600 code-font" dir="ltr">O</code>=OSPF).
                         </div>
                         <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
-                            <strong class="text-slate-900">4. <span class="english-badge">AD & Metric</span>:</strong> אמינות המקור ועלות המסלול <span class="code-font font-bold" dir="ltr">[AD/Cost]</span>.
+                            <strong class="text-slate-900">4. <div class="english-badge">AD & Metric</div>:</strong> אמינות המקור ועלות המסלול <div class="code-font font-bold" dir="ltr">[AD/Cost]</div>.
                         </div>
                     </div>
                 </div>
@@ -235,7 +255,7 @@
                 <div class="card-light p-6 border-t-4 border-t-purple-500">
                     <div class="flex justify-between items-start mb-4">
                         <div>
-                            <span class="text-xs font-bold text-purple-600 uppercase tracking-wider block">מנגנון ההחלטה</span>
+                            <div class="text-xs font-bold text-purple-600 uppercase tracking-wider block">מנגנון ההחלטה</div>
                             <h3 class="text-2xl font-bold text-slate-900">איך הנתב בוחר נתיב?</h3>
                         </div>
                         <div class="p-2 bg-purple-50 rounded-xl text-purple-600">
@@ -249,32 +269,144 @@
 
                     <div class="space-y-4 text-sm md:text-base">
                         <div class="info-box-purple p-4">
-                            <strong class="text-purple-900 block mb-1 text-base md:text-lg">🎯 1. <span class="english-badge">Longest Prefix Match</span> (התאמה הספציפית ביותר)</strong>
-                            <span class="text-slate-700 leading-relaxed block">הנתב מעדיף תמיד את הכלל הספציפי ביותר! למשל, אם מגיעה חבילה ל-<span class="code-font font-bold" dir="ltr">10.1.1.5</span>, והטבלה מכילה נתיב ל-<span class="code-font font-bold" dir="ltr">10.1.0.0/16</span> ונתיב ל-<span class="code-font font-bold" dir="ltr">10.1.1.0/24</span> – הנתב יבחר ב-<span class="code-font font-bold" dir="ltr">/24</span> כי הוא ספציפי יותר!</span>
+                            <strong class="text-purple-900 block mb-1 text-base md:text-lg">🎯 1. <div class="english-badge">Longest Prefix Match</div> (התאמה הספציפית ביותר)</strong>
+                            <div class="text-slate-700 leading-relaxed block">הנתב מעדיף תמיד את הכלל הספציפי ביותר! למשל, אם מגיעה חבילה ל-<div class="code-font font-bold" dir="ltr">10.1.1.5</div>, והטבלה מכילה נתיב ל-<div class="code-font font-bold" dir="ltr">10.1.0.0/16</div> ונתיב ל-<div class="code-font font-bold" dir="ltr">10.1.1.0/24</div> – הנתב יבחר ב-<div class="code-font font-bold" dir="ltr">/24</div> כי הוא ספציפי יותר!</div>
                         </div>
                         <div class="info-box-blue p-4">
-                            <strong class="text-sky-900 block mb-1 text-base md:text-lg">🏆 2. <span class="english-badge">Administrative Distance - AD</span> (מרחק מינהלי)</strong>
-                            <span class="text-slate-700 leading-relaxed block">אם לנתב יש שני מסלולים לאותה רשת בדיוק ממקורות שונים, הוא יבחר במקור עם ה-<span class="english-badge">AD</span> הנמוך ביותר (<span class="code-font" dir="ltr">Static = 1</span>, <span class="code-font" dir="ltr">OSPF = 110</span>, <span class="code-font" dir="ltr">RIP = 120</span>).</span>
+                            <strong class="text-sky-900 block mb-1 text-base md:text-lg">🏆 2. <div class="english-badge">Administrative Distance - AD</div> (מרחק מינהלי)</strong>
+                            <div class="text-slate-700 leading-relaxed block">אם לנתב יש שני מסלולים לאותה רשת בדיוק ממקורות שונים, הוא יבחר במקור עם ה-<div class="english-badge">AD</div> הנמוך ביותר (<div class="code-font" dir="ltr">Static = 1</div>, <div class="code-font" dir="ltr">OSPF = 110</div>, <div class="code-font" dir="ltr">RIP = 120</div>).</div>
                         </div>
                     </div>
                 </div>
 
             </div>
 
+            <!-- SUB-SECTION: HOW TO READ THE ROUTING TABLE (CREAM BACKGROUND & DESIGNED FONT) -->
+            <div class="card-light p-6 md:p-8 border-2 border-[#e6e1d5] bg-[#fdfbf7] text-slate-800 shadow-sm">
+                <div class="flex items-center gap-2 text-amber-700 font-bold text-xs uppercase tracking-widest mb-1">
+                    <i data-lucide="mouse-pointer" class="w-4 h-4"></i>
+                    <div>מדריך אינטראקטיבי</div>
+                </div>
+                <h3 class="text-2xl md:text-3xl font-black mb-3 text-amber-950">איך לקרוא את טבלת הניתוב?</h3>
+                <p class="text-slate-700 text-base md:text-lg leading-relaxed mb-6 font-medium">
+                    לפניך פלט אמיתי מפקודת <code class="code-font font-bold text-amber-800 bg-amber-100/60 px-1.5 py-0.5 rounded" dir="ltr">show ip route</code> בנתב Cisco. 
+                    <strong class="text-amber-900 font-bold">העבר את סמן העכבר מעל כל שורה בטבלה</strong> כדי לגלות ולפרק את משמעות כל פרמטר ברשומה!
+                </p>
+
+                <!-- Interactive Routing Table Display -->
+                <div class="space-y-4 cli-container font-mono text-xs md:text-sm" dir="ltr">
+                    
+                    <div class="p-3 bg-[#f5efe2] rounded-lg border border-[#e2d8c3] text-slate-700 text-xs font-bold">
+                        Router# show ip route<br>
+                        Codes: C - connected, L - local, S - static, R - RIP, O - OSPF, * - candidate default
+                    </div>
+
+                    <!-- Line 1: Connected -->
+                    <div class="space-y-1">
+                        <div class="route-row p-4 bg-white rounded-xl border border-[#e2d8c3] flex flex-wrap items-center justify-between gap-2 shadow-sm">
+                            <div class="flex items-center gap-3">
+                                <div class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold rounded border border-emerald-300 text-sm">C</div>
+                                <div class="font-bold text-emerald-900 text-sm md:text-base">192.168.10.0/24</div>
+                            </div>
+                            <div class="text-slate-700 font-semibold">
+                                <div class="text-slate-500 inline">is directly connected,</div>
+                                <div class="text-sky-700 font-bold inline">GigabitEthernet0/0/0</div>
+                            </div>
+                        </div>
+                        <div class="route-explanation bg-[#f3ede0] border border-emerald-300 p-4 rounded-xl text-slate-800 font-sans text-xs md:text-sm space-y-1.5" dir="rtl">
+                            <p class="font-bold text-emerald-800 text-sm mb-1">🟢 רשת מחוברת ישירות (Connected Route):</p>
+                            <p>• <strong>C:</strong> מציג שמקור המסלול הוא חיבור פיזי ישיר לנתב.</p>
+                            <p>• <strong>192.168.10.0/24:</strong> כתובת רשת היעד ומסכת סאבנט.</p>
+                            <p>• <strong>directly connected:</strong> אין הופ נוסף (Next-Hop) בדרך.</p>
+                            <p>• <strong>GigabitEthernet0/0/0:</strong> ממשק היציאה הפיזי בנתב דרכו יוצאות החבילות.</p>
+                        </div>
+                    </div>
+
+                    <!-- Line 2: Static Route -->
+                    <div class="space-y-1">
+                        <div class="route-row p-4 bg-white rounded-xl border border-[#e2d8c3] flex flex-wrap items-center justify-between gap-2 shadow-sm">
+                            <div class="flex items-center gap-3">
+                                <div class="px-2.5 py-1 bg-sky-100 text-sky-800 font-bold rounded border border-sky-300 text-sm">S</div>
+                                <div class="font-bold text-sky-900 text-sm md:text-base">10.2.0.0/16</div>
+                            </div>
+                            <div class="text-slate-700 font-semibold">
+                                <div class="text-amber-800 font-bold inline">[1/0]</div>
+                                <div class="text-slate-500 inline">via</div>
+                                <div class="text-purple-800 font-bold inline">192.168.10.254</div>
+                            </div>
+                        </div>
+                        <div class="route-explanation bg-[#f3ede0] border border-sky-300 p-4 rounded-xl text-slate-800 font-sans text-xs md:text-sm space-y-1.5" dir="rtl">
+                            <p class="font-bold text-sky-800 text-sm mb-1">🔵 ניתוב סטטי (Static Route):</p>
+                            <p>• <strong>S:</strong> הוגדר ידנית ע"י מנהל הרשת.</p>
+                            <p>• <strong>10.2.0.0/16:</strong> רשת היעד המרוחקת.</p>
+                            <p>• <strong>[1/0]:</strong> ערך מרחק מינהלי AD=1 (אמין מאוד!) ועלות Metric=0.</p>
+                            <p>• <strong>via 192.168.10.254:</strong> כתובת ה-Next-Hop (הנתב הבא בתור שאליו תישלח החבילה).</p>
+                        </div>
+                    </div>
+
+                    <!-- Line 3: OSPF Route -->
+                    <div class="space-y-1">
+                        <div class="route-row p-4 bg-white rounded-xl border border-[#e2d8c3] flex flex-wrap items-center justify-between gap-2 shadow-sm">
+                            <div class="flex items-center gap-3">
+                                <div class="px-2.5 py-1 bg-red-100 text-red-800 font-bold rounded border border-red-300 text-sm">O</div>
+                                <div class="font-bold text-red-900 text-sm md:text-base">172.16.1.0/24</div>
+                            </div>
+                            <div class="text-slate-700 font-semibold">
+                                <div class="text-amber-800 font-bold inline">[110/65]</div>
+                                <div class="text-slate-500 inline">via</div>
+                                <div class="text-purple-800 font-bold inline">10.0.0.2</div>,
+                                <div class="text-slate-500 inline">00:14:22,</div>
+                                <div class="text-sky-700 font-bold inline">Gi0/0/1</div>
+                            </div>
+                        </div>
+                        <div class="route-explanation bg-[#f3ede0] border border-red-300 p-4 rounded-xl text-slate-800 font-sans text-xs md:text-sm space-y-1.5" dir="rtl">
+                            <p class="font-bold text-red-800 text-sm mb-1">🔴 נתיב שנלמד דינמית דרך OSPF:</p>
+                            <p>• <strong>O:</strong> נלמד אוטומטית ע"י פרוטוקול OSPF.</p>
+                            <p>• <strong>[110/65]:</strong> <strong>110</strong> הינו מרחק מינהלי (AD). <strong>65</strong> הינה העלות הכוללת (Metric/Cost) המחושבת לפי רוחב הפס.</p>
+                            <p>• <strong>via 10.0.0.2:</strong> כתובת ה-Next-Hop לשליחה.</p>
+                            <p>• <strong>00:14:22:</strong> הזמן שחלף מאז שנלמד או עודכן המסלול בטבלה.</p>
+                            <p>• <strong>Gi0/0/1:</strong> ממשק היציאה המקומי.</p>
+                        </div>
+                    </div>
+
+                    <!-- Line 4: Default Route -->
+                    <div class="space-y-1">
+                        <div class="route-row p-4 bg-white rounded-xl border border-[#e2d8c3] flex flex-wrap items-center justify-between gap-2 shadow-sm">
+                            <div class="flex items-center gap-3">
+                                <div class="px-2.5 py-1 bg-amber-100 text-amber-900 font-bold rounded border border-amber-300 text-sm">S*</div>
+                                <div class="font-bold text-amber-900 text-sm md:text-base">0.0.0.0/0</div>
+                            </div>
+                            <div class="text-slate-700 font-semibold">
+                                <div class="text-amber-800 font-bold inline">[1/0]</div>
+                                <div class="text-slate-500 inline">via</div>
+                                <div class="text-purple-800 font-bold inline">203.0.113.1</div>
+                            </div>
+                        </div>
+                        <div class="route-explanation bg-[#f3ede0] border border-amber-400 p-4 rounded-xl text-slate-800 font-sans text-xs md:text-sm space-y-1.5" dir="rtl">
+                            <p class="font-bold text-amber-900 text-sm mb-1">🟡 נתיב ברירת מחדל (Default Route):</p>
+                            <p>• <strong>S*:</strong> נתיב סטטי המסומן כנקודת יציאה אחרונה (Candidate Default).</p>
+                            <p>• <strong>0.0.0.0/0:</strong> "כל יעד שהוא" - תופס כל חבילה שכתובת היעד שלה לא נמצאה ברשומה ספציפית יותר.</p>
+                            <p>• <strong>via 203.0.113.1:</strong> כתובת הנתב של ספק האינטרנט (ISP).</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
             <div class="card-light p-6 md:p-8">
-                <span class="text-xs font-bold text-red-500 uppercase tracking-wider block mb-1">ניתוב מוגדר ידנית</span>
-                <h3 class="text-2xl md:text-3xl font-black text-slate-900 mb-3">ניתוב סטטי (<span class="english-badge">Static Routing</span>) ו-<span class="english-badge">Default Route</span></h3>
+                <div class="text-xs font-bold text-red-500 uppercase tracking-wider block mb-1">ניתוב מוגדר ידנית</div>
+                <h3 class="text-2xl md:text-3xl font-black text-slate-900 mb-3">ניתוב סטטי (<div class="english-badge">Static Routing</div>) ו-<div class="english-badge">Default Route</div></h3>
                 
                 <p class="text-slate-600 text-base md:text-lg leading-relaxed mb-6">
                     בניתוב סטטי, מנהל הרשת מגדיר באופן ידני את הנתיב לכל רשת מרוחקת. 
-                    פתרון זה מעולה לרשתות קטנות, לקישורי קצה, או להגדרת **<span class="english-badge">Default Route</span> (נתיב ברירת מחדל)** המפנה את כל התעבורה הבלתי מוכרת אל האינטרנט.
+                    פתרון זה מעולה לרשתות קטנות, לקישורי קצה, או להגדרת **<div class="english-badge">Default Route</div> (נתיב ברירת מחדל)** המפנה את כל התעבורה הבלתי מוכרת אל האינטרנט.
                 </p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 text-sm md:text-base">
                     <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-200">
                         <h4 class="font-bold text-emerald-800 text-base md:text-lg mb-3 flex items-center gap-2">
                             <i data-lucide="check-circle" class="w-5 h-5"></i>
-                            <span>יתרונות ניתוב סטטי</span>
+                            <div>יתרונות ניתוב סטטי</div>
                         </h4>
                         <ul class="list-disc list-inside space-y-2 text-slate-700">
                             <li>אינו צורך משאבי מעבד וזיכרון בנתב.</li>
@@ -286,7 +418,7 @@
                     <div class="bg-red-50 p-5 rounded-xl border border-red-200">
                         <h4 class="font-bold text-red-800 text-base md:text-lg mb-3 flex items-center gap-2">
                             <i data-lucide="x-circle" class="w-5 h-5"></i>
-                            <span>חסרונות ניתוב סטטי</span>
+                            <div>חסרונות ניתוב סטטי</div>
                         </h4>
                         <ul class="list-disc list-inside space-y-2 text-slate-700">
                             <li>אינו קונוורג'נטי - לא משתקם אוטומטית כשתקלה מתרחשת!</li>
@@ -303,20 +435,20 @@
                             <div class="w-3 h-3 rounded-full bg-red-500"></div>
                             <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
                             <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
-                            <span class="text-xs code-font text-slate-400 ml-2" dir="ltr">Cisco IOS CLI - Static & Default Routing</span>
+                            <div class="text-xs code-font text-slate-400 ml-2" dir="ltr">Cisco IOS CLI - Static & Default Routing</div>
                         </div>
-                        <span class="text-[10px] code-font bg-red-950 text-red-400 border border-red-800 px-2.5 py-0.5 rounded-full font-bold" dir="ltr">Router(config)#</span>
+                        <div class="text-[10px] code-font bg-red-950 text-red-400 border border-red-800 px-2.5 py-0.5 rounded-full font-bold" dir="ltr">Router(config)#</div>
                     </div>
 
                     <div class="bg-black/80 p-4 rounded-xl code-font text-xs md:text-sm text-emerald-400 space-y-3 overflow-x-auto border border-slate-800" dir="ltr">
-                        <p><span class="text-slate-500">! 1. Static Route with Next-Hop IP</span></p>
-                        <p><span class="text-yellow-400">Router(config)#</span> ip route 192.168.20.0 255.255.255.0 10.0.0.2</p>
+                        <p><div class="text-slate-500 inline">! 1. Static Route with Next-Hop IP</div></p>
+                        <p><div class="text-yellow-400 inline">Router(config)#</div> ip route 192.168.20.0 255.255.255.0 10.0.0.2</p>
                         
-                        <p class="pt-2"><span class="text-slate-500">! 2. Static Route with Exit Interface</span></p>
-                        <p><span class="text-yellow-400">Router(config)#</span> ip route 192.168.30.0 255.255.255.0 GigabitEthernet0/0/1</p>
+                        <p class="pt-2"><div class="text-slate-500 inline">! 2. Static Route with Exit Interface</div></p>
+                        <p><div class="text-yellow-400 inline">Router(config)#</div> ip route 192.168.30.0 255.255.255.0 GigabitEthernet0/0/1</p>
                         
-                        <p class="pt-2"><span class="text-slate-500">! 3. Default Route (0.0.0.0/0) to ISP</span></p>
-                        <p><span class="text-yellow-400">Router(config)#</span> ip route 0.0.0.0 0.0.0.0 203.0.113.1</p>
+                        <p class="pt-2"><div class="text-slate-500 inline">! 3. Default Route (0.0.0.0/0) to ISP</div></p>
+                        <p><div class="text-yellow-400 inline">Router(config)#</div> ip route 0.0.0.0 0.0.0.0 203.0.113.1</p>
                     </div>
                 </div>
 
@@ -324,7 +456,7 @@
 
             <div class="flex justify-end">
                 <button onclick="switchTab('intro')" class="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all">
-                    <span>עבור לניתוב דינמי והשוואת פרוטוקולים</span>
+                    <div>עבור לניתוב דינמי והשוואת פרוטוקולים</div>
                     <i data-lucide="arrow-left" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -337,7 +469,7 @@
             <div class="card-light p-6 md:p-8 bg-gradient-to-r from-white via-slate-50 to-red-50/30">
                 <div class="flex items-center gap-2 text-red-600 font-bold text-sm uppercase tracking-widest mb-2">
                     <i data-lucide="zap" class="w-5 h-5"></i>
-                    <span>שדרוג מניתוב סטטי לדינמי</span>
+                    <div>שדרוג מניתוב סטטי לדינמי</div>
                 </div>
                 <h2 class="text-3xl md:text-4xl font-black text-slate-900 mb-3">למה אנחנו חייבים פרוטוקולי ניתוב דינמיים?</h2>
                 <p class="text-slate-700 leading-relaxed text-base md:text-xl">
@@ -352,8 +484,8 @@
                 <div class="card-light p-6 md:p-8 relative overflow-hidden border-t-4 border-t-amber-500">
                     <div class="flex justify-between items-start mb-4">
                         <div>
-                            <span class="text-sm font-bold text-amber-600 uppercase tracking-wider block">פרוטוקולי וקטור מרחק</span>
-                            <h3 class="text-2xl font-bold text-slate-900"><span class="english-badge text-base">Distance Vector (DV)</span></h3>
+                            <div class="text-sm font-bold text-amber-600 uppercase tracking-wider block">פרוטוקולי וקטור מרחק</div>
+                            <h3 class="text-2xl font-bold text-slate-900"><div class="english-badge text-base">Distance Vector (DV)</div></h3>
                         </div>
                         <div class="p-3 bg-amber-50 rounded-xl text-amber-600">
                             <i data-lucide="arrow-right-left" class="w-8 h-8"></i>
@@ -367,15 +499,15 @@
                     <div class="space-y-4 text-sm md:text-base">
                         <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
                             <strong class="text-slate-900 block mb-1 text-base md:text-lg">📐 מטריקה (מדד לבחירת נתיב):</strong>
-                            <span class="text-slate-700">ספירת קפיצות (<strong><span class="english-badge">Hop Count</span></strong>). הנתיב עם הכי פחות נתבים בדרך מנצח!</span>
+                            <div class="text-slate-700">ספירת קפיצות (<strong><div class="english-badge">Hop Count</div></strong>). הנתיב עם הכי פחות נתבים בדרך מנצח!</div>
                         </div>
                         <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
                             <strong class="text-slate-900 block mb-1 text-base md:text-lg">⏱️ עדכונים:</strong>
-                            <span class="text-slate-700">עדכונים תקופתיים מלאים (משדר את כל טבלת הניתוב במרווחי זמן קבועים).</span>
+                            <div class="text-slate-700">עדכונים תקופתיים מלאים (משדר את כל טבלת הניתוב במרווחי זמן קבועים).</div>
                         </div>
                         <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
                             <strong class="text-slate-900 block mb-1 text-base md:text-lg">💡 דוגמאות מפורסמות:</strong>
-                            <span class="text-amber-700 code-font font-bold text-base" dir="ltr">RIP, EIGRP</span>
+                            <div class="text-amber-700 code-font font-bold text-base" dir="ltr">RIP, EIGRP</div>
                         </div>
                     </div>
                 </div>
@@ -383,8 +515,8 @@
                 <div class="card-light p-6 md:p-8 relative overflow-hidden border-t-4 border-t-emerald-500">
                     <div class="flex justify-between items-start mb-4">
                         <div>
-                            <span class="text-sm font-bold text-emerald-600 uppercase tracking-wider block">פרוטוקולי מצב הקישור</span>
-                            <h3 class="text-2xl font-bold text-slate-900"><span class="english-badge text-base">Link State (LS)</span></h3>
+                            <div class="text-sm font-bold text-emerald-600 uppercase tracking-wider block">פרוטוקולי מצב הקישור</div>
+                            <h3 class="text-2xl font-bold text-slate-900"><div class="english-badge text-base">Link State (LS)</div></h3>
                         </div>
                         <div class="p-3 bg-emerald-50 rounded-xl text-emerald-600">
                             <i data-lucide="map-pin" class="w-8 h-8"></i>
@@ -392,21 +524,21 @@
                     </div>
 
                     <p class="text-base md:text-lg text-slate-700 mb-5 leading-relaxed">
-                        כל נתב בונה <strong>מפה מלאה ומדויקת</strong> של כל הרשת (כמו <span class="english-badge">Google Maps</span> / <span class="english-badge">Waze</span>). הוא יודע בדיוק איפה כל נתב נמצא, מה רוחב הפס של כל כבל, ומה מצב הקישורים.
+                        כל נתב בונה <strong>מפה מלאה ומדויקת</strong> של כל הרשת (כמו <div class="english-badge">Google Maps</div> / <div class="english-badge">Waze</div>). הוא יודע בדיוק איפה כל נתב נמצא, מה רוחב הפס של כל כבל, ומה מצב הקישורים.
                     </p>
 
                     <div class="space-y-4 text-sm md:text-base">
                         <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
                             <strong class="text-slate-900 block mb-1 text-base md:text-lg">📐 מטריקה (מדד לבחירת נתיב):</strong>
-                            <span class="text-slate-700">עלות (<strong><span class="english-badge">Cost</span></strong>) – מחושבת על פי רוחב הפס (<span class="english-badge">Bandwidth</span>) של הקישורים. מהיר יותר = טוב יותר!</span>
+                            <div class="text-slate-700">עלות (<strong><div class="english-badge">Cost</div></strong>) – מחושבת על פי רוחב הפס (<div class="english-badge">Bandwidth</div>) של הקישורים. מהיר יותר = טוב יותר!</div>
                         </div>
                         <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
                             <strong class="text-slate-900 block mb-1 text-base md:text-lg">⏱️ עדכונים:</strong>
-                            <span class="text-slate-700">עדכונים נקודתיים רק כשמתרחש שינוי בטופולוגיה (<span class="english-badge">Triggered Updates / LSA</span>).</span>
+                            <div class="text-slate-700">עדכונים נקודתיים רק כשמתרחש שינוי בטופולוגיה (<div class="english-badge">Triggered Updates / LSA</div>).</div>
                         </div>
                         <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
                             <strong class="text-slate-900 block mb-1 text-base md:text-lg">💡 דוגמאות מפורסמות:</strong>
-                            <span class="text-emerald-700 code-font font-bold text-base" dir="ltr">OSPF, IS-IS</span>
+                            <div class="text-emerald-700 code-font font-bold text-base" dir="ltr">OSPF, IS-IS</div>
                         </div>
                     </div>
                 </div>
@@ -416,7 +548,7 @@
             <div class="card-light p-6 md:p-8 overflow-x-auto">
                 <h3 class="text-xl md:text-2xl font-bold text-slate-800 mb-5 flex items-center gap-2">
                     <i data-lucide="table" class="w-6 h-6 text-red-500"></i>
-                    <span>טבלת השוואה מרוכזת</span>
+                    <div>טבלת השוואה מרוכזת</div>
                 </h3>
                 
                 <table class="w-full text-right text-base md:text-lg">
@@ -439,19 +571,19 @@
                             <td class="p-4 text-slate-700 code-font text-base" dir="ltr">Dijkstra (SPF)</td>
                         </tr>
                         <tr>
-                            <td class="p-4 font-bold text-slate-900">מדד נתיב נבחר (<span class="english-badge">Metric</span>)</td>
-                            <td class="p-4 text-amber-700 font-bold">ספירת קפיצות (<span class="english-badge">Hop Count</span>)</td>
-                            <td class="p-4 text-emerald-700 font-bold">עלות הקישור <span class="code-font text-base" dir="ltr">(Cost = 100Mbps / Bandwidth)</span></td>
+                            <td class="p-4 font-bold text-slate-900">מדד נתיב נבחר (<div class="english-badge">Metric</div>)</td>
+                            <td class="p-4 text-amber-700 font-bold">ספירת קפיצות (<div class="english-badge">Hop Count</div>)</td>
+                            <td class="p-4 text-emerald-700 font-bold">עלות הקישור <div class="code-font text-base" dir="ltr">(Cost = 100Mbps / Bandwidth)</div></td>
                         </tr>
                         <tr>
-                            <td class="p-4 font-bold text-slate-900">מהירות התכנסות (<span class="english-badge">Convergence</span>)</td>
+                            <td class="p-4 font-bold text-slate-900">מהירות התכנסות (<div class="english-badge">Convergence</div>)</td>
                             <td class="p-4 text-slate-700">איטית (עלול ליצור לולאות ניתוב)</td>
                             <td class="p-4 text-slate-700">מהירה מאוד (כמעט מיידית)</td>
                         </tr>
                         <tr>
                             <td class="p-4 font-bold text-slate-900">צריכת משאבי מעבד וזיכרון</td>
                             <td class="p-4 text-slate-700">נמוכה מאוד</td>
-                            <td class="p-4 text-slate-700">גבוהה (נדרש חישוב עץ <span class="english-badge">SPF</span>)</td>
+                            <td class="p-4 text-slate-700">גבוהה (נדרש חישוב עץ <div class="english-badge">SPF</div>)</td>
                         </tr>
                     </tbody>
                 </table>
@@ -460,10 +592,10 @@
             <div class="flex justify-between">
                 <button onclick="switchTab('basics')" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold px-5 py-3 rounded-xl flex items-center gap-2 transition-all">
                     <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    <span>חזרה לטבלת ניתוב וסטטי</span>
+                    <div>חזרה לטבלת ניתוב וסטטי</div>
                 </button>
                 <button onclick="switchTab('ospf')" class="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all">
-                    <span>המשך ללימוד <span class="english-badge">OSPF</span> והגדרות <span class="english-badge">CLI</span></span>
+                    <div>המשך ללימוד <div class="english-badge">OSPF</div> והגדרות <div class="english-badge">CLI</div></div>
                     <i data-lucide="arrow-left" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -474,41 +606,41 @@
         <div id="section-ospf" class="space-y-6 hidden text-base md:text-lg">
             
             <div class="card-light p-6 md:p-8">
-                <span class="text-sm font-bold text-red-500 uppercase tracking-wider block mb-1">פרוטוקול הניתוב המוביל בעולם</span>
-                <h2 class="text-3xl md:text-4xl font-black text-slate-900 mb-3">צלילה לעומק: פרוטוקול <span class="english-badge text-xl">OSPF</span></h2>
+                <div class="text-sm font-bold text-red-500 uppercase tracking-wider block mb-1">פרוטוקול הניתוב המוביל בעולם</div>
+                <h2 class="text-3xl md:text-4xl font-black text-slate-900 mb-3">צלילה לעומק: פרוטוקול <div class="english-badge text-xl">OSPF</div></h2>
                 <p class="text-slate-700 text-base md:text-xl leading-relaxed mb-6">
-                    <span class="english-badge text-base">OSPF (Open Shortest Path First)</span> הוא פרוטוקול <span class="english-badge text-base">Link State</span> סטנדרטי ופתוח. הוא מבוסס על אלגוריתם דייקסטרה (<span class="english-badge text-base">Dijkstra</span>) ומחלק את הרשת ל<strong>אזורים (<span class="english-badge text-base">Areas</span>)</strong> כדי לחסוך בחישובים.
-                    האזור המרכזי והחובה בכל רשת <span class="english-badge text-base">OSPF</span> נקרא <strong class="code-font font-bold text-base" dir="ltr">Area 0 (Backbone Area)</strong>.
+                    <div class="english-badge text-base">OSPF (Open Shortest Path First)</div> הוא פרוטוקול <div class="english-badge text-base">Link State</div> סטנדרטי ופתוח. הוא מבוסס על אלגוריתם דייקסטרה (<div class="english-badge text-base">Dijkstra</div>) ומחלק את הרשת ל<strong>אזורים (<div class="english-badge text-base">Areas</div>)</strong> כדי לחסוך בחישובים.
+                    האזור המרכזי והחובה בכל רשת <div class="english-badge text-base">OSPF</div> נקרא <strong class="code-font font-bold text-base" dir="ltr">Area 0 (Backbone Area)</strong>.
                 </p>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <div class="info-box-blue p-5">
                         <h4 class="font-bold text-slate-900 text-lg mb-2 flex items-center gap-2">
                             <i data-lucide="users" class="w-5 h-5 text-sky-600"></i>
-                            <span>1. הודעות <span class="english-badge">Hello</span></span>
+                            <div>1. הודעות <div class="english-badge">Hello</div></div>
                         </h4>
                         <p class="text-sm md:text-base text-slate-700 leading-relaxed">
-                            נתבים שולחים הודעות <span class="english-badge">Hello</span> קבועות כדי לגלות שכנים ולוודא שהם עדיין פעילים (<span class="english-badge">Adjacency</span>).
+                            נתבים שולחים הודעות <div class="english-badge">Hello</div> קבועות כדי לגלות שכנים ולוודא שהם עדיין פעילים (<div class="english-badge">Adjacency</div>).
                         </p>
                     </div>
 
                     <div class="info-box-emerald p-5">
                         <h4 class="font-bold text-slate-900 text-lg mb-2 flex items-center gap-2">
                             <i data-lucide="database" class="w-5 h-5 text-emerald-600"></i>
-                            <span>2. מסד נתונים <span class="english-badge">LSDB</span></span>
+                            <div>2. מסד נתונים <div class="english-badge">LSDB</div></div>
                         </h4>
                         <p class="text-sm md:text-base text-slate-700 leading-relaxed">
-                            כל הודעות ה-<span class="english-badge">LSA</span> מאוחסנות ב-<span class="english-badge">LSDB (Link State Database)</span>. מסד נתונים זה זהה לחלוטין בכל הנתבים באותו <span class="english-badge">Area</span>!
+                            כל הודעות ה-<div class="english-badge">LSA</div> מאוחסנות ב-<div class="english-badge">LSDB (Link State Database)</div>. מסד נתונים זה זהה לחלוטין בכל הנתבים באותו <div class="english-badge">Area</div>!
                         </p>
                     </div>
 
                     <div class="info-box-orange p-5">
                         <h4 class="font-bold text-slate-900 text-lg mb-2 flex items-center gap-2">
                             <i data-lucide="calculator" class="w-5 h-5 text-orange-600"></i>
-                            <span>3. חישוב <span class="english-badge">SPF</span></span>
+                            <div>3. חישוב <div class="english-badge">SPF</div></div>
                         </h4>
                         <p class="text-sm md:text-base text-slate-700 leading-relaxed">
-                            מתוך ה-<span class="english-badge">LSDB</span>, אלגוריתם דייקסטרה מחשב את העלות (<span class="english-badge">Cost</span>) הנמוכה ביותר לכל יעד ומכניס אותה לטבלת הניתוב.
+                            מתוך ה-<div class="english-badge">LSDB</div>, אלגוריתם דייקסטרה מחשב את העלות (<div class="english-badge">Cost</div>) הנמוכה ביותר לכל יעד ומכניס אותה לטבלת הניתוב.
                         </p>
                     </div>
                 </div>
@@ -520,39 +652,39 @@
                             <div class="w-3 h-3 rounded-full bg-red-500"></div>
                             <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
                             <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
-                            <span class="text-sm code-font text-slate-400 ml-2" dir="ltr">Cisco IOS CLI - OSPF Configuration</span>
+                            <div class="text-sm code-font text-slate-400 ml-2" dir="ltr">Cisco IOS CLI - OSPF Configuration</div>
                         </div>
-                        <span class="text-xs code-font bg-red-950 text-red-400 border border-red-800 px-3 py-1 rounded-full font-bold" dir="ltr">Router(config)#</span>
+                        <div class="text-xs code-font bg-red-950 text-red-400 border border-red-800 px-3 py-1 rounded-full font-bold" dir="ltr">Router(config)#</div>
                     </div>
 
                     <p class="text-sm md:text-base text-slate-300 mb-4" dir="rtl">
-                        כדי להגדיר <span class="english-badge">OSPF</span> בנתב סיסקו, מפעילים את תהליך ה-<span class="english-badge">OSPF</span> בעזרת מזהה תהליך (<span class="english-badge">Process ID</span>) ואז מפרסמים את הרשתות המחוברות בעזרת **<span class="english-badge">Wildcard Mask</span>** ולא סאבנט מאסק רגיל!
+                        כדי להגדיר <div class="english-badge">OSPF</div> בנתב סיסקו, מפעילים את תהליך ה-<div class="english-badge">OSPF</div> בעזרת מזהה תהליך (<div class="english-badge">Process ID</div>) ואז מפרסמים את הרשתות המחוברות בעזרת **<div class="english-badge">Wildcard Mask</div>** ולא סאבנט מאסק רגיל!
                     </p>
 
                     <div class="bg-black/80 p-5 rounded-xl code-font text-sm md:text-base text-emerald-400 space-y-3 overflow-x-auto border border-slate-800" dir="ltr">
-                        <p><span class="text-slate-500">! Enable OSPF Process ID = 1</span></p>
-                        <p><span class="text-yellow-400">Router(config)#</span> router ospf 1</p>
-                        <p class="pt-1"><span class="text-slate-500">! Set Unique Router-ID</span></p>
-                        <p><span class="text-yellow-400">Router(config-router)#</span> router-id 1.1.1.1</p>
-                        <p class="pt-1"><span class="text-slate-500">! Advertise LAN subnet 192.168.10.0/24 in Area 0</span></p>
-                        <p><span class="text-yellow-400">Router(config-router)#</span> network 192.168.10.0 0.0.0.255 area 0</p>
-                        <p class="pt-1"><span class="text-slate-500">! Advertise WAN subnet 10.0.0.0/30 in Area 0</span></p>
-                        <p><span class="text-yellow-400">Router(config-router)#</span> network 10.0.0.0 0.0.0.3 area 0</p>
+                        <p><div class="text-slate-500 inline">! Enable OSPF Process ID = 1</div></p>
+                        <p><div class="text-yellow-400 inline">Router(config)#</div> router ospf 1</p>
+                        <p class="pt-1"><div class="text-slate-500 inline">! Set Unique Router-ID</div></p>
+                        <p><div class="text-yellow-400 inline">Router(config-router)#</div> router-id 1.1.1.1</p>
+                        <p class="pt-1"><div class="text-slate-500 inline">! Advertise LAN subnet 192.168.10.0/24 in Area 0</div></p>
+                        <p><div class="text-yellow-400 inline">Router(config-router)#</div> network 192.168.10.0 0.0.0.255 area 0</p>
+                        <p class="pt-1"><div class="text-slate-500 inline">! Advertise WAN subnet 10.0.0.0/30 in Area 0</div></p>
+                        <p><div class="text-yellow-400 inline">Router(config-router)#</div> network 10.0.0.0 0.0.0.3 area 0</p>
                     </div>
 
                     <div class="mt-4 p-4 bg-slate-800/60 rounded-lg text-sm md:text-base text-slate-300 border border-slate-700/50" dir="rtl">
-                        💡 <strong>טיפ של מקצוענים (<span class="english-badge">Wildcard Mask</span>):</strong> <span class="english-badge">Wildcard Mask</span> הוא תמונת הראי של <span class="english-badge">Subnet Mask</span>. משיגים אותו על ידי חיסור כל אוקטט מ-<span class="code-font text-sm" dir="ltr">255.255.255.255</span>. למשל עבור <span class="code-font text-sm" dir="ltr">255.255.255.0 (/24)</span>, ה-<span class="english-badge">Wildcard</span> יהיה <span class="code-font text-sm" dir="ltr">0.0.0.255</span>.
+                        💡 <strong>טיפ של מקצוענים (<div class="english-badge">Wildcard Mask</div>):</strong> <div class="english-badge">Wildcard Mask</div> הוא תמונת הראי של <div class="english-badge">Subnet Mask</div>. משיגים אותו על ידי חיסור כל אוקטט מ-<div class="code-font text-sm" dir="ltr">255.255.255.255</div>. למשל עבור <div class="code-font text-sm" dir="ltr">255.255.255.0 (/24)</div>, ה-<div class="english-badge">Wildcard</div> יהיה <div class="code-font text-sm" dir="ltr">0.0.0.255</div>.
                     </div>
                 </div>
 
                 <div class="mt-8 border-t border-slate-200 pt-6">
                     <h3 class="text-xl md:text-2xl font-bold text-slate-800 mb-3 flex items-center gap-2">
                         <i data-lucide="terminal" class="w-6 h-6 text-red-500"></i>
-                        <span>איך <span class="english-badge">OSPF</span> נראה בתוך טבלת הניתוב? (<span class="english-badge">show ip route</span>)</span>
+                        <div>איך <div class="english-badge">OSPF</div> נראה בתוך טבלת הניתוב? (<div class="english-badge">show ip route</div>)</div>
                     </h3>
 
                     <p class="text-sm md:text-base text-slate-700 mb-4">
-                        כשמריצים את הפקודה <code class="code-font font-bold text-sm" dir="ltr">show ip route</code> בנתב, נתיב שנלמד דרך <span class="english-badge">OSPF</span> יסומן באות <strong class="text-red-600 code-font text-base" dir="ltr">O</strong>.
+                        כשמריצים את הפקודה <code class="code-font font-bold text-sm" dir="ltr">show ip route</code> בנתב, נתיב שנלמד דרך <div class="english-badge">OSPF</div> יסומן באות <strong class="text-red-600 code-font text-base" dir="ltr">O</strong>.
                     </p>
 
                     <div class="bg-slate-900 p-5 rounded-xl code-font text-sm md:text-base text-slate-200 overflow-x-auto border border-slate-800 cli-container" dir="ltr">
@@ -569,12 +701,12 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-sm md:text-base">
                         <div class="p-4 bg-red-50 border border-red-200 rounded-xl">
-                            <span class="font-bold text-red-800 block mb-1 text-base"><span class="english-badge">Administrative Distance (AD) = 110</span></span>
-                            <span class="text-slate-700">מדד האמינות של הפרוטוקול. ברירת המחדל של <span class="english-badge">OSPF</span> היא 110 (לעומת 120 ב-<span class="english-badge">RIP</span> ו-1 בניתוב סטטי). נמוך יותר = אמין יותר!</span>
+                            <div class="font-bold text-red-800 block mb-1 text-base"><div class="english-badge">Administrative Distance (AD) = 110</div></div>
+                            <div class="text-slate-700">מדד האמינות של הפרוטוקול. ברירת המחדל של <div class="english-badge">OSPF</div> היא 110 (לעומת 120 ב-<div class="english-badge">RIP</div> ו-1 בניתוב סטטי). נמוך יותר = אמין יותר!</div>
                         </div>
                         <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
-                            <span class="font-bold text-emerald-800 block mb-1 text-base"><span class="english-badge">Metric / Cost = 65</span></span>
-                            <span class="text-slate-700">העלות הכוללת להגעה ליעד. מחושבת על פי סיכום העלויות של כל הקישורים בדרך.</span>
+                            <div class="font-bold text-emerald-800 block mb-1 text-base"><div class="english-badge">Metric / Cost = 65</div></div>
+                            <div class="text-slate-700">העלות הכוללת להגעה ליעד. מחושבת על פי סיכום העלויות של כל הקישורים בדרך.</div>
                         </div>
                     </div>
                 </div>
@@ -584,10 +716,10 @@
             <div class="flex justify-between">
                 <button onclick="switchTab('intro')" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold px-5 py-3 rounded-xl flex items-center gap-2 transition-all">
                     <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    <span>חזרה להשוואה</span>
+                    <div>חזרה להשוואה</div>
                 </button>
                 <button onclick="switchTab('exercise')" class="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all">
-                    <span>עבור לתרגיל המעשי!</span>
+                    <div>עבור לתרגיל המעשי!</div>
                     <i data-lucide="arrow-left" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -598,8 +730,8 @@
         <div id="section-exercise" class="space-y-6 hidden">
             
             <div class="card-light p-6 md:p-8">
-                <span class="text-xs font-bold text-red-500 uppercase tracking-wider block mb-1">אתגר מחשבתי לתלמיד</span>
-                <h2 class="text-2xl font-black text-slate-900 mb-2">תרגיל מעשי: מלחמת הפרוטוקולים - <span class="english-badge">RIP</span> מול <span class="english-badge">OSPF</span></h2>
+                <div class="text-xs font-bold text-red-500 uppercase tracking-wider block mb-1">אתגר מחשבתי לתלמיד</div>
+                <h2 class="text-2xl font-black text-slate-900 mb-2">תרגיל מעשי: מלחמת הפרוטוקולים - <div class="english-badge">RIP</div> מול <div class="english-badge">OSPF</div></h2>
                 <p class="text-slate-600 text-sm leading-relaxed mb-6">
                     לפניך טופולוגיית רשת שבה יש שני נתיבים שונים בין מחשב A למחשב B. נתיב אחד עובר דרך יותר נתבים אך בעל כבלים מהירים מאוד, ונתיב שני קצר יותר בספירת קפיצות אך עובר דרך כבל איטי מאוד!
                 </p>
@@ -614,29 +746,29 @@
                             <div class="w-14 h-14 bg-red-500/20 border-2 border-red-500 rounded-2xl flex items-center justify-center text-red-400 mb-2">
                                 <i data-lucide="laptop" class="w-8 h-8"></i>
                             </div>
-                            <span class="font-bold text-xs">מחשב מקור A</span>
-                            <span class="text-[10px] code-font text-slate-400" dir="ltr">192.168.1.100/24</span>
+                            <div class="font-bold text-xs">מחשב מקור A</div>
+                            <div class="text-[10px] code-font text-slate-400" dir="ltr">192.168.1.100/24</div>
                         </div>
 
                         <div class="space-y-4">
                             <div id="path-top" class="p-3 bg-slate-800 rounded-xl border border-slate-700 text-right transition-all">
                                 <div class="flex justify-between items-center mb-1">
-                                    <span class="text-xs font-bold text-emerald-400">נתיב עליון (דרך R1 ➔ R2 ➔ R3)</span>
-                                    <span class="text-[10px] bg-emerald-950 text-emerald-300 border border-emerald-800 px-2 py-0.5 rounded">3 קפיצות</span>
+                                    <div class="text-xs font-bold text-emerald-400">נתיב עליון (דרך R1 ➔ R2 ➔ R3)</div>
+                                    <div class="text-[10px] bg-emerald-950 text-emerald-300 border border-emerald-800 px-2 py-0.5 rounded">3 קפיצות</div>
                                 </div>
                                 <p class="text-[11px] text-slate-300">
-                                    מהירות: <strong><span class="english-badge">Fiber Gigabit (1 Gbps)</span></strong> לכל הקישורים.
+                                    מהירות: <strong><div class="english-badge">Fiber Gigabit (1 Gbps)</div></strong> לכל הקישורים.
                                 </p>
                                 <div class="text-[10px] code-font text-emerald-300/80 mt-1" dir="ltr">OSPF Cost = 1 + 1 + 1 = 3</div>
                             </div>
 
                             <div id="path-bottom" class="p-3 bg-slate-800 rounded-xl border border-slate-700 text-right transition-all">
                                 <div class="flex justify-between items-center mb-1">
-                                    <span class="text-xs font-bold text-amber-400">נתיב תחתון (דרך R4 בלבד)</span>
-                                    <span class="text-[10px] bg-amber-950 text-amber-300 border border-amber-800 px-2 py-0.5 rounded">2 קפיצות</span>
+                                    <div class="text-xs font-bold text-amber-400">נתיב תחתון (דרך R4 בלבד)</div>
+                                    <div class="text-[10px] bg-amber-950 text-amber-300 border border-amber-800 px-2 py-0.5 rounded">2 קפיצות</div>
                                 </div>
                                 <p class="text-[11px] text-slate-300">
-                                    מהירות: <strong>קו חיוג איטי עתיק (<span class="english-badge">64 Kbps</span>)</strong>.
+                                    מהירות: <strong>קו חיוג איטי עתיק (<div class="english-badge">64 Kbps</div>)</strong>.
                                 </p>
                                 <div class="text-[10px] code-font text-amber-300/80 mt-1" dir="ltr">OSPF Cost = 1562 (Slow)</div>
                             </div>
@@ -646,8 +778,8 @@
                             <div class="w-14 h-14 bg-sky-500/20 border-2 border-sky-500 rounded-2xl flex items-center justify-center text-sky-400 mb-2">
                                 <i data-lucide="server" class="w-8 h-8"></i>
                             </div>
-                            <span class="font-bold text-xs">שרת יעד B</span>
-                            <span class="text-[10px] code-font text-slate-400" dir="ltr">10.0.0.50/8</span>
+                            <div class="font-bold text-xs">שרת יעד B</div>
+                            <div class="text-[10px] code-font text-slate-400" dir="ltr">10.0.0.50/8</div>
                         </div>
 
                     </div>
@@ -655,43 +787,43 @@
 
                 <!-- Interactive Quiz Form -->
                 <div class="mt-6 bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-6">
-                    <h3 class="font-bold text-slate-800 text-base border-b border-slate-200 pb-2">
+                    <h3 class="font-bold text-slate-800 text-2xl border-b border-slate-200 pb-3">
                         ❓ ענה על שתי השאלות הבאות ובדוק את הבנתך:
                     </h3>
 
                     <div>
-                        <label class="block font-bold text-xs text-slate-800 mb-2">
-                            שאלה 1: איזה נתיב יבחר פרוטוקול <span class="english-badge">RIP (Distance Vector)</span> כדי להעביר את החבילה ממחשב A לשרת B?
+                        <label class="block font-bold text-lg text-slate-800 mb-3">
+                            שאלה 1: איזה נתיב יבחר פרוטוקול <div class="english-badge">RIP (Distance Vector)</div> כדי להעביר את החבילה ממחשב A לשרת B?
                         </label>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <button onclick="selectAns(1, 'top')" id="q1-top" class="p-3 text-right text-xs bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all">
+                            <button onclick="selectAns(1, 'top')" id="q1-top" class="p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all">
                                 <strong>א. הנתיב העליון (3 קפיצות)</strong> - כי הוא מהיר יותר מבחינת רוחב פס.
                             </button>
-                            <button onclick="selectAns(1, 'bottom')" id="q1-bottom" class="p-3 text-right text-xs bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all">
-                                <strong>ב. הנתיב התחתון (2 קפיצות)</strong> - כי <span class="english-badge">RIP</span> סופר קפיצות בלבד ולא אכפת לו ממהירות הכבל!
+                            <button onclick="selectAns(1, 'bottom')" id="q1-bottom" class="p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all">
+                                <strong>ב. הנתיב התחתון (2 קפיצות)</strong> - כי <div class="english-badge">RIP</div> סופר קפיצות בלבד ולא אכפת לו ממהירות הכבל!
                             </button>
                         </div>
                     </div>
 
                     <div>
-                        <label class="block font-bold text-xs text-slate-800 mb-2">
-                            שאלה 2: איזה נתיב יבחר פרוטוקול <span class="english-badge">OSPF (Link State)</span> לאותה משימה בדיוק?
+                        <label class="block font-bold text-lg text-slate-800 mb-3">
+                            שאלה 2: איזה נתיב יבחר פרוטוקול <div class="english-badge">OSPF (Link State)</div> לאותה משימה בדיוק?
                         </label>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <button onclick="selectAns(2, 'top')" id="q2-top" class="p-3 text-right text-xs bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all">
-                                <strong>א. הנתיב העליון (<span class="english-badge">Gigabit Fiber</span>)</strong> - כי העלות (<span class="english-badge">Cost</span>) שלו אפסית למרות שיש יותר נתבים בדרך.
+                            <button onclick="selectAns(2, 'top')" id="q2-top" class="p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all">
+                                <strong>א. הנתיב העליון (<div class="english-badge">Gigabit Fiber</div>)</strong> - כי העלות (<div class="english-badge">Cost</div>) שלו אפסית למרות שיש יותר נתבים בדרך.
                             </button>
-                            <button onclick="selectAns(2, 'bottom')" id="q2-bottom" class="p-3 text-right text-xs bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all">
-                                <strong>ב. הנתיב התחתון</strong> - כי <span class="english-badge">OSPF</span> מעדיף תמיד פחות נתבים בדרך.
+                            <button onclick="selectAns(2, 'bottom')" id="q2-bottom" class="p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all">
+                                <strong>ב. הנתיב התחתון</strong> - כי <div class="english-badge">OSPF</div> מעדיף תמיד פחות נתבים בדרך.
                             </button>
                         </div>
                     </div>
 
                     <div class="pt-4 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
-                        <button onclick="checkQuizResults()" class="w-full md:w-auto bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-8 rounded-xl text-xs transition-all shadow-md">
+                        <button onclick="checkQuizResults()" class="w-full md:w-auto bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-8 rounded-xl text-sm transition-all shadow-md">
                             בדוק תשובות וקבל ניקוד
                         </button>
-                        <div id="quiz-feedback" class="hidden text-xs p-3 rounded-xl w-full md:w-auto font-bold"></div>
+                        <div id="quiz-feedback" class="hidden text-sm p-4 rounded-xl w-full md:w-auto font-bold"></div>
                     </div>
 
                 </div>
@@ -701,10 +833,10 @@
             <div class="flex justify-between">
                 <button onclick="switchTab('ospf')" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold px-5 py-3 rounded-xl flex items-center gap-2 transition-all">
                     <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    <span>חזרה ל-<span class="english-badge">OSPF</span></span>
+                    <div>חזרה ל-<div class="english-badge">OSPF</div></div>
                 </button>
                 <button onclick="switchTab('practice')" class="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all">
-                    <span>עבור לטאב תרגול ורפלקציה (10 תרגילים)</span>
+                    <div>עבור לטאב תרגול ורפלקציה (10 תרגילים)</div>
                     <i data-lucide="arrow-left" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -719,7 +851,7 @@
                     <div>
                         <div class="flex items-center gap-2 text-purple-600 font-bold text-sm uppercase tracking-widest mb-1">
                             <i data-lucide="pen-tool" class="w-5 h-5"></i>
-                            <span>תרגול אינטראקטיבי מעשי</span>
+                            <div>תרגול אינטראקטיבי מעשי</div>
                         </div>
                         <h2 class="text-3xl md:text-4xl font-black text-slate-900">10 תרגילים בנושא ניתוב סטטי ודינמי</h2>
                     </div>
@@ -727,12 +859,12 @@
                     <!-- Teacher Access Button -->
                     <button onclick="teacherAccess()" class="bg-slate-800 hover:bg-slate-900 text-amber-400 font-bold px-5 py-2.5 rounded-xl text-sm flex items-center gap-2 border border-amber-400/30 shadow-md transition-all self-start md:self-auto">
                         <i data-lucide="lock" class="w-4 h-4"></i>
-                        <span>כניסת מורה 🔒</span>
+                        <div>כניסת מורה 🔒</div>
                     </button>
                 </div>
 
                 <p class="text-slate-700 text-base md:text-xl leading-relaxed mb-6">
-                    פתור את 10 התרגילים הבאים. התרגילים כוללים חישובי מטריקות, פענוח טבלאות ניתוב, התאמות פרפיקס ופקודות <span class="english-badge">CLI</span>.
+                    פתור את 10 התרגילים הבאים. התרגילים כוללים חישובי מטריקות, פענוח טבלאות ניתוב, התאמות פרפיקס ופקודות <div class="english-badge">CLI</div>.
                     ניתן לבדוק כל תרגיל באופן עצמאי או לבדוק את כל התרגילים ביחד בסוף!
                 </p>
 
@@ -741,11 +873,11 @@
                     <!-- Ex 1 -->
                     <div class="p-5 bg-slate-50 rounded-xl border border-slate-200">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="font-bold text-base md:text-lg text-slate-900">תרגיל 1: <span class="english-badge text-base">Longest Prefix Match</span></span>
-                            <span class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: בסיסי</span>
+                            <div class="font-bold text-base md:text-lg text-slate-900">תרגיל 1: <div class="english-badge text-base">Longest Prefix Match</div></div>
+                            <div class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: בסיסי</div>
                         </div>
                         <p class="text-base text-slate-800 mb-3">
-                            מגיעה חבילה עם <span class="english-badge text-base">IP</span> יעד <span class="code-font font-bold text-base" dir="ltr">192.168.10.45</span>. בטבלת הניתוב יש את המסלולים הבאים:
+                            מגיעה חבילה עם <div class="english-badge text-base">IP</div> יעד <div class="code-font font-bold text-base" dir="ltr">192.168.10.45</div>. בטבלת הניתוב יש את המסלולים הבאים:
                         </p>
                         <div class="bg-slate-900 text-slate-100 p-4 rounded-lg code-font text-sm md:text-base mb-4 cli-container" dir="ltr">
                             A: 192.168.0.0/16 via 10.0.0.1<br>
@@ -765,11 +897,11 @@
                     <!-- Ex 2 -->
                     <div class="p-5 bg-slate-50 rounded-xl border border-slate-200">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="font-bold text-base md:text-lg text-slate-900">תרגיל 2: השוואת <span class="english-badge text-base">Administrative Distance (AD)</span></span>
-                            <span class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: בסיסי</span>
+                            <div class="font-bold text-base md:text-lg text-slate-900">תרגיל 2: השוואת <div class="english-badge text-base">Administrative Distance (AD)</div></div>
+                            <div class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: בסיסי</div>
                         </div>
                         <p class="text-base text-slate-800 mb-3">
-                            נתב למד נתיב לרשת <span class="code-font font-bold text-base" dir="ltr">172.16.0.0/16</span> דרך שלושה מקורות שונים באותו הפרפיקס.
+                            נתב למד נתיב לרשת <div class="code-font font-bold text-base" dir="ltr">172.16.0.0/16</div> דרך שלושה מקורות שונים באותו הפרפיקס.
                         </p>
                         <div class="bg-slate-900 text-slate-100 p-4 rounded-lg code-font text-sm md:text-base mb-4 cli-container" dir="ltr">
                             1. Static Route (AD = 1)<br>
@@ -789,11 +921,11 @@
                     <!-- Ex 3 -->
                     <div class="p-5 bg-slate-50 rounded-xl border border-slate-200">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="font-bold text-base md:text-lg text-slate-900">תרגיל 3: חישוב <span class="english-badge text-base">Wildcard Mask</span> עבור <span class="english-badge text-base">OSPF</span></span>
-                            <span class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: בינוני</span>
+                            <div class="font-bold text-base md:text-lg text-slate-900">תרגיל 3: חישוב <div class="english-badge text-base">Wildcard Mask</div> עבור <div class="english-badge text-base">OSPF</div></div>
+                            <div class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: בינוני</div>
                         </div>
                         <p class="text-base text-slate-800 mb-3">
-                            מהו ה-<span class="english-badge text-base">Wildcard Mask</span> המדויק עבור רשת בעלת <span class="english-badge text-base">Subnet Mask</span> של <span class="code-font font-bold text-base" dir="ltr">255.255.255.252 (/30)</span>?
+                            מהו ה-<div class="english-badge text-base">Wildcard Mask</div> המדויק עבור רשת בעלת <div class="english-badge text-base">Subnet Mask</div> של <div class="code-font font-bold text-base" dir="ltr">255.255.255.252 (/30)</div>?
                         </p>
                         <input type="text" id="p3-ans" placeholder="למשל: 0.0.0.255" class="w-full md:w-2/3 p-3 text-base bg-white border border-slate-300 rounded-lg code-font" dir="ltr">
                         <div id="p3-fb" class="mt-3 text-sm md:text-base font-bold hidden"></div>
@@ -802,11 +934,11 @@
                     <!-- Ex 4 -->
                     <div class="p-5 bg-slate-50 rounded-xl border border-slate-200">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="font-bold text-base md:text-lg text-slate-900">תרגיל 4: זיהוי פקודת <span class="english-badge text-base">Default Route</span></span>
-                            <span class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: בסיסי</span>
+                            <div class="font-bold text-base md:text-lg text-slate-900">תרגיל 4: זיהוי פקודת <div class="english-badge text-base">Default Route</div></div>
+                            <div class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: בסיסי</div>
                         </div>
                         <p class="text-base text-slate-800 mb-3">
-                            איזו פקודת <span class="english-badge text-base">Cisco CLI</span> מגדירה נתיב ברירת מחדל (<span class="english-badge text-base">Default Route</span>) לכתובת <span class="english-badge text-base">Next-Hop</span> של <span class="code-font font-bold text-base" dir="ltr">192.168.1.254</span>?
+                            איזו פקודת <div class="english-badge text-base">Cisco CLI</div> מגדירה נתיב ברירת מחדל (<div class="english-badge text-base">Default Route</div>) לכתובת <div class="english-badge text-base">Next-Hop</div> של <div class="code-font font-bold text-base" dir="ltr">192.168.1.254</div>?
                         </p>
                         <select id="p4-ans" class="w-full md:w-2/3 p-3 text-base bg-white border border-slate-300 rounded-lg code-font" dir="ltr">
                             <option value="">-- בחר פקודה --</option>
@@ -820,12 +952,12 @@
                     <!-- Ex 5 -->
                     <div class="p-5 bg-slate-50 rounded-xl border border-slate-200">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="font-bold text-base md:text-lg text-slate-900">תרגיל 5: פענוח פורמט <span class="english-badge text-base">[AD/Metric]</span></span>
-                            <span class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: בינוני</span>
+                            <div class="font-bold text-base md:text-lg text-slate-900">תרגיל 5: פענוח פורמט <div class="english-badge text-base">[AD/Metric]</div></div>
+                            <div class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: בינוני</div>
                         </div>
                         <p class="text-base text-slate-800 mb-3">
-                            בטבלת הניתוב מופיעה השורה הבאה: <span class="code-font text-red-600 font-bold text-base" dir="ltr">O 10.2.0.0/16 [110/50] via 10.0.0.1</span>.<br>
-                            מהו ערך ה-<strong><span class="english-badge text-base">Cost (Metric)</span></strong> להגעה לרשת זו?
+                            בטבלת הניתוב מופיעה השורה הבאה: <div class="code-font text-red-600 font-bold text-base" dir="ltr">O 10.2.0.0/16 [110/50] via 10.0.0.1</div>.<br>
+                            מהו ערך ה-<strong><div class="english-badge text-base">Cost (Metric)</div></strong> להגעה לרשת זו?
                         </p>
                         <input type="number" id="p5-ans" placeholder="הכנס מספר" class="w-full md:w-2/3 p-3 text-base bg-white border border-slate-300 rounded-lg code-font" dir="ltr">
                         <div id="p5-fb" class="mt-3 text-sm md:text-base font-bold hidden"></div>
@@ -834,11 +966,11 @@
                     <!-- Ex 6 -->
                     <div class="p-5 bg-slate-50 rounded-xl border border-slate-200">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="font-bold text-base md:text-lg text-slate-900">תרגיל 6: הגדרת <span class="english-badge text-base">Passive Interface</span></span>
-                            <span class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: מתקדם</span>
+                            <div class="font-bold text-base md:text-lg text-slate-900">תרגיל 6: הגדרת <div class="english-badge text-base">Passive Interface</div></div>
+                            <div class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: מתקדם</div>
                         </div>
                         <p class="text-base text-slate-800 mb-3">
-                            מה תפקידה של הפקודה <code class="code-font font-bold text-base" dir="ltr">passive-interface GigabitEthernet0/0</code> תחת תהליך ה-<span class="english-badge text-base">OSPF</span>?
+                            מה תפקידה של הפקודה <code class="code-font font-bold text-base" dir="ltr">passive-interface GigabitEthernet0/0</code> תחת תהליך ה-<div class="english-badge text-base">OSPF</div>?
                         </p>
                         <select id="p6-ans" class="w-full md:w-2/3 p-3 text-base bg-white border border-slate-300 rounded-lg">
                             <option value="">-- בחר תשובה --</option>
@@ -852,11 +984,11 @@
                     <!-- Ex 7 -->
                     <div class="p-5 bg-slate-50 rounded-xl border border-slate-200">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="font-bold text-base md:text-lg text-slate-900">תרגיל 7: מזהה אזור <span class="english-badge text-base">OSPF (Backbone)</span></span>
-                            <span class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: בסיסי</span>
+                            <div class="font-bold text-base md:text-lg text-slate-900">תרגיל 7: מזהה אזור <div class="english-badge text-base">OSPF (Backbone)</div></div>
+                            <div class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: בסיסי</div>
                         </div>
                         <p class="text-base text-slate-800 mb-3">
-                            מהו מספר ה-<span class="english-badge text-base">Area</span> החובה שחייב להיות קיים בכל רשת <span class="english-badge text-base">OSPF</span> (הנקרא <span class="english-badge text-base">Backbone Area</span>)?
+                            מהו מספר ה-<div class="english-badge text-base">Area</div> החובה שחייב להיות קיים בכל רשת <div class="english-badge text-base">OSPF</div> (הנקרא <div class="english-badge text-base">Backbone Area</div>)?
                         </p>
                         <input type="number" id="p7-ans" placeholder="הכנס מספר אזור" class="w-full md:w-2/3 p-3 text-base bg-white border border-slate-300 rounded-lg code-font" dir="ltr">
                         <div id="p7-fb" class="mt-3 text-sm md:text-base font-bold hidden"></div>
@@ -865,11 +997,11 @@
                     <!-- Ex 8 -->
                     <div class="p-5 bg-slate-50 rounded-xl border border-slate-200">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="font-bold text-base md:text-lg text-slate-900">תרגיל 8: הגבלת ספירת קפיצות ב-<span class="english-badge text-base">RIP</span></span>
-                            <span class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: בינוני</span>
+                            <div class="font-bold text-base md:text-lg text-slate-900">תרגיל 8: הגבלת ספירת קפיצות ב-<div class="english-badge text-base">RIP</div></div>
+                            <div class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: בינוני</div>
                         </div>
                         <p class="text-base text-slate-800 mb-3">
-                            מהו מספר הקפיצות (<span class="english-badge text-base">Hop Count</span>) המקסימלי המותר בפרוטוקול <span class="english-badge text-base">RIP</span> (אשר מעבר אליו רשת נחשבת <span class="english-badge text-base">Unreachable</span>)?
+                            מהו מספר הקפיצות (<div class="english-badge text-base">Hop Count</div>) המקסימלי המותר בפרוטוקול <div class="english-badge text-base">RIP</div> (אשר מעבר אליו רשת נחשבת <div class="english-badge text-base">Unreachable</div>)?
                         </p>
                         <input type="number" id="p8-ans" placeholder="הכנס ספירת קפיצות מקסימלית מותרת" class="w-full md:w-2/3 p-3 text-base bg-white border border-slate-300 rounded-lg code-font" dir="ltr">
                         <div id="p8-fb" class="mt-3 text-sm md:text-base font-bold hidden"></div>
@@ -878,11 +1010,11 @@
                     <!-- Ex 9 -->
                     <div class="p-5 bg-slate-50 rounded-xl border border-slate-200">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="font-bold text-base md:text-lg text-slate-900">תרגיל 9: פקודת בדיקת שכני <span class="english-badge text-base">OSPF</span></span>
-                            <span class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: בסיסי</span>
+                            <div class="font-bold text-base md:text-lg text-slate-900">תרגיל 9: פקודת בדיקת שכני <div class="english-badge text-base">OSPF</div></div>
+                            <div class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: בסיסי</div>
                         </div>
                         <p class="text-base text-slate-800 mb-3">
-                            איזו פקודה ב-<span class="english-badge text-base">Cisco CLI</span> תציג את הנתבים השכנים שהקימו יחסי שכנות (<span class="english-badge text-base">Adjacency</span>) ב-<span class="english-badge text-base">OSPF</span>?
+                            איזו פקודה ב-<div class="english-badge text-base">Cisco CLI</div> תציג את הנתבים השכנים שהקימו יחסי שכנות (<div class="english-badge text-base">Adjacency</div>) ב-<div class="english-badge text-base">OSPF</div>?
                         </p>
                         <select id="p9-ans" class="w-full md:w-2/3 p-3 text-base bg-white border border-slate-300 rounded-lg code-font" dir="ltr">
                             <option value="">-- בחר פקודה --</option>
@@ -896,11 +1028,11 @@
                     <!-- Ex 10 -->
                     <div class="p-5 bg-slate-50 rounded-xl border border-slate-200">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="font-bold text-base md:text-lg text-slate-900">תרגיל 10: זיהוי סוגי פרוטוקול ניתוב</span>
-                            <span class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: מתקדם</span>
+                            <div class="font-bold text-base md:text-lg text-slate-900">תרגיל 10: זיהוי סוגי פרוטוקול ניתוב</div>
+                            <div class="text-xs code-font text-purple-700 bg-purple-100 px-3 py-1 rounded font-bold">רמת קושי: מתקדם</div>
                         </div>
                         <p class="text-base text-slate-800 mb-3">
-                            פרוטוקול ניתוב אשר מנהל מסד נתונים מסוג <span class="english-badge text-base">LSDB</span> ומריץ את אלגוריתם <span class="english-badge text-base">Dijkstra</span> שייך למשפחת:
+                            פרוטוקול ניתוב אשר מנהל מסד נתונים מסוג <div class="english-badge text-base">LSDB</div> ומריץ את אלגוריתם <div class="english-badge text-base">Dijkstra</div> שייך למשפחת:
                         </p>
                         <select id="p10-ans" class="w-full md:w-2/3 p-3 text-base bg-white border border-slate-300 rounded-lg">
                             <option value="">-- בחר משפחה --</option>
@@ -926,10 +1058,10 @@
             <div class="flex justify-between">
                 <button onclick="switchTab('exercise')" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold px-5 py-3 rounded-xl flex items-center gap-2 transition-all">
                     <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    <span>חזרה לתרגיל המעשי</span>
+                    <div>חזרה לתרגיל המעשי</div>
                 </button>
                 <button onclick="switchTab('summary')" class="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all">
-                    <span>עבור לסיכום ודוח למורה</span>
+                    <div>עבור לסיכום ודוח למורה</div>
                     <i data-lucide="arrow-left" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -940,44 +1072,44 @@
         <div id="section-summary" class="space-y-6 hidden text-base md:text-lg">
             
             <div class="card-light p-6 md:p-8 border-t-4 border-t-red-500">
-                <span class="text-sm font-bold text-red-500 uppercase tracking-wider block mb-1"><span class="english-badge text-base">Cisco CLI Cheat-Sheet</span></span>
+                <div class="text-sm font-bold text-red-500 uppercase tracking-wider block mb-1"><div class="english-badge text-base">Cisco CLI Cheat-Sheet</div></div>
                 <h3 class="text-2xl md:text-3xl font-black text-slate-900 mb-6">פקודות חשובות בנושא ניתוב</h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     
                     <div class="p-5 bg-slate-900 rounded-xl text-slate-200 space-y-3 border border-slate-800 cli-container">
                         <div class="text-amber-400 font-bold font-sans flex items-center justify-between border-b border-slate-800 pb-3 mb-3 text-lg" dir="rtl">
-                            <span class="flex items-center gap-2">
+                            <div class="flex items-center gap-2">
                                 <i data-lucide="terminal" class="w-5 h-5"></i>
-                                <span>פקודות הצגה ודיאגנוסטיקה (<span class="english-badge">Show & Test</span>)</span>
-                            </span>
+                                <div>פקודות הצגה ודיאגנוסטיקה (<div class="english-badge">Show & Test</div>)</div>
+                            </div>
                         </div>
-                        <p dir="ltr"><span class="text-emerald-400 code-font text-base">show ip route</span> - Display full routing table</p>
-                        <p dir="ltr"><span class="text-emerald-400 code-font text-base">show ip route ospf</span> - Display OSPF routes only</p>
-                        <p dir="ltr"><span class="text-emerald-400 code-font text-base">show ip ospf neighbor</span> - Display OSPF neighbor adjacencies</p>
-                        <p dir="ltr"><span class="text-emerald-400 code-font text-base">show ip interface brief</span> - Check IP and interface status</p>
-                        <p dir="ltr"><span class="text-emerald-400 code-font text-base">traceroute [IP]</span> - Trace hop-by-hop packet path</p>
+                        <p dir="ltr"><div class="text-emerald-400 code-font text-base inline">show ip route</div> - Display full routing table</p>
+                        <p dir="ltr"><div class="text-emerald-400 code-font text-base inline">show ip route ospf</div> - Display OSPF routes only</p>
+                        <p dir="ltr"><div class="text-emerald-400 code-font text-base inline">show ip ospf neighbor</div> - Display OSPF neighbor adjacencies</p>
+                        <p dir="ltr"><div class="text-emerald-400 code-font text-base inline">show ip interface brief</div> - Check IP and interface status</p>
+                        <p dir="ltr"><div class="text-emerald-400 code-font text-base inline">traceroute [IP]</div> - Trace hop-by-hop packet path</p>
                     </div>
 
                     <div class="p-5 bg-slate-900 rounded-xl text-slate-200 space-y-3 border border-slate-800 cli-container">
                         <div class="text-sky-400 font-bold font-sans flex items-center justify-between border-b border-slate-800 pb-3 mb-3 text-lg" dir="rtl">
-                            <span class="flex items-center gap-2">
+                            <div class="flex items-center gap-2">
                                 <i data-lucide="settings" class="w-5 h-5"></i>
-                                <span>פקודות הגדרה (<span class="english-badge">Configuration</span>)</span>
-                            </span>
+                                <div>פקודות הגדרה (<div class="english-badge">Configuration</div>)</div>
+                            </div>
                         </div>
-                        <p dir="ltr"><span class="text-emerald-400 code-font text-base">ip route [net] [mask] [next-hop]</span> - Static route</p>
-                        <p dir="ltr"><span class="text-emerald-400 code-font text-base">ip route 0.0.0.0 0.0.0.0 [next-hop]</span> - Default route</p>
-                        <p dir="ltr"><span class="text-emerald-400 code-font text-base">router ospf [process-id]</span> - Enable OSPF routing process</p>
-                        <p dir="ltr"><span class="text-emerald-400 code-font text-base">network [net] [wildcard] area [id]</span> - Advertise subnet</p>
-                        <p dir="ltr"><span class="text-emerald-400 code-font text-base">passive-interface [int]</span> - Suppress routing updates</p>
+                        <p dir="ltr"><div class="text-emerald-400 code-font text-base inline">ip route [net] [mask] [next-hop]</div> - Static route</p>
+                        <p dir="ltr"><div class="text-emerald-400 code-font text-base inline">ip route 0.0.0.0 0.0.0.0 [next-hop]</div> - Default route</p>
+                        <p dir="ltr"><div class="text-emerald-400 code-font text-base inline">router ospf [process-id]</div> - Enable OSPF routing process</p>
+                        <p dir="ltr"><div class="text-emerald-400 code-font text-base inline">network [net] [wildcard] area [id]</div> - Advertise subnet</p>
+                        <p dir="ltr"><div class="text-emerald-400 code-font text-base inline">passive-interface [int]</div> - Suppress routing updates</p>
                     </div>
 
                 </div>
             </div>
 
             <div class="card-light p-6 md:p-8">
-                <span class="text-sm font-bold text-red-500 uppercase tracking-wider block mb-1">משוב והישגים</span>
+                <div class="text-sm font-bold text-red-500 uppercase tracking-wider block mb-1">משוב והישגים</div>
                 <h2 class="text-2xl md:text-3xl font-black text-slate-900 mb-6">דוח סיכום לשיעור הניתוב המקיף</h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -1004,14 +1136,14 @@
                             </p>
 
                             <div class="p-4 bg-white border border-slate-200 rounded-xl code-font text-sm md:text-base text-slate-800 flex justify-between items-center mb-6" dir="ltr">
-                                <span id="summary-status">STATUS: COMPLETED</span>
-                                <span class="text-emerald-600 font-bold" id="user-score-display">100/100 XP</span>
+                                <div id="summary-status">STATUS: COMPLETED</div>
+                                <div class="text-emerald-600 font-bold" id="user-score-display">100/100 XP</div>
                             </div>
                         </div>
 
                         <button onclick="downloadReport()" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl text-base transition-all flex items-center justify-center gap-2 shadow-lg shadow-red-500/20">
                             <i data-lucide="download" class="w-5 h-5"></i>
-                            <span>הורד דוח מסכם למורה (TXT)</span>
+                            <div>הורד דוח מסכם למורה (TXT)</div>
                         </button>
                     </div>
 
@@ -1029,7 +1161,7 @@
             <div class="flex items-center justify-between border-b border-slate-800/80 pb-1.5 mb-2">
                 <div class="flex items-center gap-1.5">
                     <div class="pulse-online"></div>
-                    <span class="code-font text-[9px] text-slate-300 font-bold tracking-tight uppercase" dir="ltr">DAN-GPT // ONLINE</span>
+                    <div class="code-font text-[9px] text-slate-300 font-bold tracking-tight uppercase" dir="ltr">DAN-GPT // ONLINE</div>
                 </div>
                 <i data-lucide="sparkles" class="w-3 h-3 text-amber-400"></i>
             </div>
@@ -1047,13 +1179,13 @@
             </div>
 
             <div class="flex flex-wrap gap-1 mb-2.5" dir="ltr">
-                <span class="text-[8px] bg-slate-800/90 text-slate-300 px-1.5 py-0.5 rounded code-font">OSPF</span>
-                <span class="text-[8px] bg-slate-800/90 text-slate-300 px-1.5 py-0.5 rounded code-font">Static</span>
-                <span class="text-[8px] bg-slate-800/90 text-slate-300 px-1.5 py-0.5 rounded code-font">CLI</span>
+                <div class="text-[8px] bg-slate-800/90 text-slate-300 px-1.5 py-0.5 rounded code-font">OSPF</div>
+                <div class="text-[8px] bg-slate-800/90 text-slate-300 px-1.5 py-0.5 rounded code-font">Static</div>
+                <div class="text-[8px] bg-slate-800/90 text-slate-300 px-1.5 py-0.5 rounded code-font">CLI</div>
             </div>
 
             <a href="https://gemini.google.com/gem/167016ac4a4b/66c3b83daa7940ef?usp=sharing" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold py-1.5 px-2 rounded text-[10px] flex items-center justify-center gap-1.5 transition-all border border-emerald-400/30" dir="ltr">
-                <span>connect --gem dan-gpt</span>
+                <div>connect --gem dan-gpt</div>
                 <i data-lucide="external-link" class="w-3 h-3"></i>
             </a>
 
@@ -1101,14 +1233,14 @@
         function selectAns(qNum, choice) {
             if (qNum === 1) {
                 q1Answer = choice;
-                document.getElementById('q1-top').className = "p-3 text-right text-xs bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all";
-                document.getElementById('q1-bottom').className = "p-3 text-right text-xs bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all";
-                document.getElementById(`q1-${choice}`).className = "p-3 text-right text-xs bg-amber-50 border-2 border-amber-500 rounded-xl font-bold text-amber-900 transition-all";
+                document.getElementById('q1-top').className = "p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all";
+                document.getElementById('q1-bottom').className = "p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all";
+                document.getElementById(`q1-${choice}`).className = "p-4 text-right text-base bg-amber-50 border-2 border-amber-500 rounded-xl font-bold text-amber-900 transition-all";
             } else if (qNum === 2) {
                 q2Answer = choice;
-                document.getElementById('q2-top').className = "p-3 text-right text-xs bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all";
-                document.getElementById('q2-bottom').className = "p-3 text-right text-xs bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all";
-                document.getElementById(`q2-${choice}`).className = "p-3 text-right text-xs bg-emerald-50 border-2 border-emerald-500 rounded-xl font-bold text-emerald-900 transition-all";
+                document.getElementById('q2-top').className = "p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all";
+                document.getElementById('q2-bottom').className = "p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all";
+                document.getElementById(`q2-${choice}`).className = "p-4 text-right text-base bg-emerald-50 border-2 border-emerald-500 rounded-xl font-bold text-emerald-900 transition-all";
             }
         }
 
