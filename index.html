@@ -32,7 +32,7 @@
         .card-light {
             background: #ffffff;
             border-radius: 1rem;
-            box-shadow: 0 4px 20px -2px rgba0, 0, 0, 0.05, 0 2px 6px -1px rgba0, 0, 0, 0.03;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
             border: 1px solid #e2e8f0;
         }
         .info-box-blue {
@@ -60,7 +60,7 @@
             background: #0b192c;
             border: 1px solid #334155;
             border-radius: 0.85rem;
-            box-shadow: 0 10px 25px -5px rgba0, 0, 0, 0.4;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
             color: #ffffff;
         }
         
@@ -73,22 +73,22 @@
             animation: pulse-glow 1.5s infinite;
         }
         @keyframes pulse-glow {
-            0%, 100% { opacity: 1; transform: scale1; }
-            50% { opacity: 0.5; transform: scale1.2; }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
         }
 
         @keyframes crazy-bounce {
-            0%, 100% { transform: translateY0 rotate0deg; }
-            25% { transform: translateY-3px rotate-1.5deg; }
-            75% { transform: translateY-1px rotate1.5deg; }
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-3px) rotate(-1.5deg); }
+            75% { transform: translateY(-1px) rotate(1.5deg); }
         }
         .crazy-hover:hover {
             animation: crazy-bounce 0.5s ease-in-out infinite;
         }
 
         @keyframes spin {
-            from { transform: rotate0deg; }
-            to { transform: rotate360deg; }
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         .spinning-avatar {
             animation: spin 4s linear infinite;
@@ -107,7 +107,7 @@
         .tab-btn-active {
             background-color: #ef4444;
             color: #ffffff;
-            box-shadow: 0 4px 12px rgba239, 68, 68, 0.3;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
         .tab-btn-inactive {
             background-color: #ffffff;
@@ -172,27 +172,27 @@
 
             <!-- Top Nav Buttons -->
             <nav class="flex flex-wrap gap-2 justify-center">
-                <button onclick="switchTab'basics'" id="tab-basics" class="tab-btn tab-btn-active">
+                <button onclick="switchTab('basics')" id="tab-basics" class="tab-btn tab-btn-active">
                     <i data-lucide="table" class="w-4 h-4"></i>
                     <div>טבלת ניתוב וניתוב סטטי</div>
                 </button>
-                <button onclick="switchTab'intro'" id="tab-intro" class="tab-btn tab-btn-inactive">
+                <button onclick="switchTab('intro')" id="tab-intro" class="tab-btn tab-btn-inactive">
                     <i data-lucide="compass" class="w-4 h-4"></i>
                     <div>ניתוב דינמי והשוואה</div>
                 </button>
-                <button onclick="switchTab'ospf'" id="tab-ospf" class="tab-btn tab-btn-inactive">
+                <button onclick="switchTab('ospf')" id="tab-ospf" class="tab-btn tab-btn-inactive">
                     <i data-lucide="cpu" class="w-4 h-4"></i>
                     <div>העמקה ב-OSPF</div>
                 </button>
-                <button onclick="switchTab'exercise'" id="tab-exercise" class="tab-btn tab-btn-inactive">
+                <button onclick="switchTab('exercise')" id="tab-exercise" class="tab-btn tab-btn-inactive">
                     <i data-lucide="award" class="w-4 h-4"></i>
                     <div>תרגיל מעשי: RIP vs OSPF</div>
                 </button>
-                <button onclick="switchTab'practice'" id="tab-practice" class="tab-btn tab-btn-inactive">
+                <button onclick="switchTab('practice')" id="tab-practice" class="tab-btn tab-btn-inactive">
                     <i data-lucide="pen-tool" class="w-4 h-4"></i>
                     <div>תרגול ורפלקציה - 10 תרגילים</div>
                 </button>
-                <button onclick="switchTab'summary'" id="tab-summary" class="tab-btn tab-btn-inactive">
+                <button onclick="switchTab('summary')" id="tab-summary" class="tab-btn tab-btn-inactive">
                     <i data-lucide="file-text" class="w-4 h-4"></i>
                     <div>דוח סיכום ופקודות</div>
                 </button>
@@ -462,7 +462,7 @@
             </div>
 
             <div class="flex justify-end">
-                <button onclick="switchTab'intro'" class="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all">
+                <button onclick="switchTab('intro')" class="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all">
                     <div>עבור לניתוב דינמי והשוואת פרוטוקולים</div>
                     <i data-lucide="arrow-left" class="w-5 h-5"></i>
                 </button>
@@ -597,11 +597,11 @@
             </div>
 
             <div class="flex justify-between">
-                <button onclick="switchTab'basics'" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold px-5 py-3 rounded-xl flex items-center gap-2 transition-all">
+                <button onclick="switchTab('basics')" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold px-5 py-3 rounded-xl flex items-center gap-2 transition-all">
                     <i data-lucide="arrow-right" class="w-5 h-5"></i>
                     <div>חזרה לטבלת ניתוב וסטטי</div>
                 </button>
-                <button onclick="switchTab'ospf'" class="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all">
+                <button onclick="switchTab('ospf')" class="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all">
                     <div>המשך ללימוד OSPF והגדרות CLI</div>
                     <i data-lucide="arrow-left" class="w-5 h-5"></i>
                 </button>
@@ -721,11 +721,11 @@
             </div>
 
             <div class="flex justify-between">
-                <button onclick="switchTab'intro'" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold px-5 py-3 rounded-xl flex items-center gap-2 transition-all">
+                <button onclick="switchTab('intro')" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold px-5 py-3 rounded-xl flex items-center gap-2 transition-all">
                     <i data-lucide="arrow-right" class="w-5 h-5"></i>
                     <div>חזרה להשוואה</div>
                 </button>
-                <button onclick="switchTab'exercise'" class="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all">
+                <button onclick="switchTab('exercise')" class="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all">
                     <div>עבור לתרגיל המעשי.</div>
                     <i data-lucide="arrow-left" class="w-5 h-5"></i>
                 </button>
@@ -803,10 +803,10 @@
                             שאלה 1: איזה נתיב יבחר פרוטוקול <div class="english-badge">RIP Distance Vector</div> כדי להעביר את החבילה ממחשב A לשרת B?
                         </label>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <button onclick="selectAns1, 'top'" id="q1-top" class="p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all">
+                            <button onclick="selectAns(1, 'top')" id="q1-top" class="p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all">
                                 <strong>א. הנתיב העליון 3 קפיצות</strong> - כי הוא מהיר יותר מבחינת רוחב פס.
                             </button>
-                            <button onclick="selectAns1, 'bottom'" id="q1-bottom" class="p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all">
+                            <button onclick="selectAns(1, 'bottom')" id="q1-bottom" class="p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all">
                                 <strong>ב. הנתיב התחתון 2 קפיצות</strong> - כי RIP סופר קפיצות בלבד ולא אכפת לו ממהירות הכבל.
                             </button>
                         </div>
@@ -817,17 +817,17 @@
                             שאלה 2: איזה נתיב יבחר פרוטוקול <div class="english-badge">OSPF Link State</div> לאותה משימה בדיוק?
                         </label>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <button onclick="selectAns2, 'top'" id="q2-top" class="p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all">
+                            <button onclick="selectAns(2, 'top')" id="q2-top" class="p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all">
                                 <strong>א. הנתיב העליון <div class="english-badge">Gigabit Fiber</div></strong> - כי העלות Cost שלו אפסית למרות שיש יותר נתבים בדרך.
                             </button>
-                            <button onclick="selectAns2, 'bottom'" id="q2-bottom" class="p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all">
+                            <button onclick="selectAns(2, 'bottom')" id="q2-bottom" class="p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all">
                                 <strong>ב. הנתיב התחתון</strong> - כי OSPF מעדיף תמיד פחות נתבים בדרך.
                             </button>
                         </div>
                     </div>
 
                     <div class="pt-4 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
-                        <button onclick="checkQuizResults" class="w-full md:w-auto bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-8 rounded-xl text-sm transition-all shadow-md">
+                        <button onclick="checkQuizResults()" class="w-full md:w-auto bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-8 rounded-xl text-sm transition-all shadow-md">
                             בדוק תשובות וקבל ניקוד
                         </button>
                         <div id="quiz-feedback" class="hidden text-sm p-4 rounded-xl w-full md:w-auto font-bold"></div>
@@ -838,11 +838,11 @@
             </div>
 
             <div class="flex justify-between">
-                <button onclick="switchTab'ospf'" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold px-5 py-3 rounded-xl flex items-center gap-2 transition-all">
+                <button onclick="switchTab('ospf')" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold px-5 py-3 rounded-xl flex items-center gap-2 transition-all">
                     <i data-lucide="arrow-right" class="w-5 h-5"></i>
                     <div>חזרה ל-OSPF</div>
                 </button>
-                <button onclick="switchTab'practice'" class="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all">
+                <button onclick="switchTab('practice')" class="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all">
                     <div>עבור לטאב תרגול ורפלקציה - 10 תרגילים</div>
                     <i data-lucide="arrow-left" class="w-5 h-5"></i>
                 </button>
@@ -864,7 +864,7 @@
                     </div>
                     
                     <!-- Teacher Access Button -->
-                    <button onclick="teacherAccess" class="bg-slate-800 hover:bg-slate-900 text-amber-400 font-bold px-5 py-2.5 rounded-xl text-sm flex items-center gap-2 border border-amber-400/30 shadow-md transition-all self-start md:self-auto">
+                    <button onclick="teacherAccess()" class="bg-slate-800 hover:bg-slate-900 text-amber-400 font-bold px-5 py-2.5 rounded-xl text-sm flex items-center gap-2 border border-amber-400/30 shadow-md transition-all self-start md:self-auto">
                         <i data-lucide="lock" class="w-4 h-4"></i>
                         <div>כניסת מורה 🔒</div>
                     </button>
@@ -1054,7 +1054,7 @@
 
                 <!-- Check All Button -->
                 <div class="mt-8 pt-6 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <button onclick="checkPracticeAll" class="w-full md:w-auto bg-purple-600 hover:bg-purple-700 text-white font-bold py-3.5 px-8 rounded-xl text-base transition-all shadow-md">
+                    <button onclick="checkPracticeAll()" class="w-full md:w-auto bg-purple-600 hover:bg-purple-700 text-white font-bold py-3.5 px-8 rounded-xl text-base transition-all shadow-md">
                         בדוק את כל 10 התרגילים
                     </button>
                     <div id="practice-total-fb" class="text-sm md:text-base font-bold p-4 rounded-xl hidden w-full md:w-auto"></div>
@@ -1063,11 +1063,11 @@
             </div>
 
             <div class="flex justify-between">
-                <button onclick="switchTab'exercise'" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold px-5 py-3 rounded-xl flex items-center gap-2 transition-all">
+                <button onclick="switchTab('exercise')" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold px-5 py-3 rounded-xl flex items-center gap-2 transition-all">
                     <i data-lucide="arrow-right" class="w-5 h-5"></i>
                     <div>חזרה לתרגיל המעשי</div>
                 </button>
-                <button onclick="switchTab'summary'" class="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all">
+                <button onclick="switchTab('summary')" class="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-red-500/20 transition-all">
                     <div>עבור לסיכום ודוח למורה</div>
                     <i data-lucide="arrow-left" class="w-5 h-5"></i>
                 </button>
@@ -1148,7 +1148,7 @@
                             </div>
                         </div>
 
-                        <button onclick="downloadReport" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl text-base transition-all flex items-center justify-center gap-2 shadow-lg shadow-red-500/20">
+                        <button onclick="downloadReport()" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl text-base transition-all flex items-center justify-center gap-2 shadow-lg shadow-red-500/20">
                             <i data-lucide="download" class="w-5 h-5"></i>
                             <div>הורד דוח מסכם למורה TXT</div>
                         </button>
@@ -1209,62 +1209,62 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        lucide.createIcons;
+        lucide.createIcons();
 
         let q1Answer = null;
         let q2Answer = null;
         let practiceScore = 0;
 
-        function switchTabtabId {
+        function switchTab(tabId) {
             const tabs = ['basics', 'intro', 'ospf', 'exercise', 'practice', 'summary'];
-            tabs.forEach t => {
-                const section = document.getElementById`section-${t}`;
-                if section section.classList.add'hidden';
+            tabs.forEach(t => {
+                const section = document.getElementById(`section-${t}`);
+                if (section) section.classList.add('hidden');
                 
-                const btn = document.getElementById`tab-${t}`;
-                if btn {
+                const btn = document.getElementById(`tab-${t}`);
+                if (btn) {
                     btn.className = "tab-btn tab-btn-inactive";
                 }
-            };
+            });
 
-            const targetSection = document.getElementById`section-${tabId}`;
-            if targetSection targetSection.classList.remove'hidden';
+            const targetSection = document.getElementById(`section-${tabId}`);
+            if (targetSection) targetSection.classList.remove('hidden');
             
-            const activeBtn = document.getElementById`tab-${tabId}`;
-            if activeBtn {
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            if (activeBtn) {
                 activeBtn.className = "tab-btn tab-btn-active";
             }
-            window.scrollTo{ top: 0, behavior: 'smooth' };
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function selectAnsqNum, choice {
-            if qNum === 1 {
+        function selectAns(qNum, choice) {
+            if (qNum === 1) {
                 q1Answer = choice;
-                document.getElementById'q1-top'.className = "p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all";
-                document.getElementById'q1-bottom'.className = "p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all";
-                document.getElementById`q1-${choice}`.className = "p-4 text-right text-base bg-amber-50 border-2 border-amber-500 rounded-xl font-bold text-amber-900 transition-all";
-            } else if qNum === 2 {
+                document.getElementById('q1-top').className = "p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all";
+                document.getElementById('q1-bottom').className = "p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all";
+                document.getElementById(`q1-${choice}`).className = "p-4 text-right text-base bg-amber-50 border-2 border-amber-500 rounded-xl font-bold text-amber-900 transition-all";
+            } else if (qNum === 2) {
                 q2Answer = choice;
-                document.getElementById'q2-top'.className = "p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all";
-                document.getElementById'q2-bottom'.className = "p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all";
-                document.getElementById`q2-${choice}`.className = "p-4 text-right text-base bg-emerald-50 border-2 border-emerald-500 rounded-xl font-bold text-emerald-900 transition-all";
+                document.getElementById('q2-top').className = "p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all";
+                document.getElementById('q2-bottom').className = "p-4 text-right text-base bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-all";
+                document.getElementById(`q2-${choice}`).className = "p-4 text-right text-base bg-emerald-50 border-2 border-emerald-500 rounded-xl font-bold text-emerald-900 transition-all";
             }
         }
 
-        function checkQuizResults {
-            const feedback = document.getElementById'quiz-feedback';
-            feedback.classList.remove'hidden', 'bg-red-100', 'text-red-800', 'bg-emerald-100', 'text-emerald-800';
+        function checkQuizResults() {
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.classList.remove('hidden', 'bg-red-100', 'text-red-800', 'bg-emerald-100', 'text-emerald-800');
 
-            if !q1Answer || !q2Answer {
+            if (!q1Answer || !q2Answer) {
                 feedback.className += ' bg-amber-100 text-amber-900';
                 feedback.innerHTML = '⚠️ נא לענות על שתי השאלות לפני בדיקת התוצאות.';
                 return;
             }
 
-            const q1Correct = q1Answer === 'bottom';
-            const q2Correct = q2Answer === 'top';
+            const q1Correct = (q1Answer === 'bottom');
+            const q2Correct = (q2Answer === 'top');
 
-            if q1Correct && q2Correct {
+            if (q1Correct && q2Correct) {
                 feedback.className += ' bg-emerald-100 text-emerald-900';
                 feedback.innerHTML = '🎉 כל הכבוד. ענית נכון על שתי השאלות. RIP בוחר בנתיב האיטי כי הוא סופר קפיצות בלבד - 2 קפיצות מול 3, בעוד OSPF בוחר בנתיב המהיר Gigabit כי ה-Cost שלו אפסי.';
             } else {
@@ -1273,179 +1273,179 @@
             }
         }
 
-        function teacherAccess {
-            const password = prompt"הכנס סיסמת מורה לצפייה ופתרון מלא:";
-            if password === 'sahar' {
-                document.getElementById'p1-ans'.value = 'C';
-                document.getElementById'p2-ans'.value = 'static';
-                document.getElementById'p3-ans'.value = '0.0.0.3';
-                document.getElementById'p4-ans'.value = '1';
-                document.getElementById'p5-ans'.value = '50';
-                document.getElementById'p6-ans'.value = 'block';
-                document.getElementById'p7-ans'.value = '0';
-                document.getElementById'p8-ans'.value = '15';
-                document.getElementById'p9-ans'.value = '1';
-                document.getElementById'p10-ans'.value = 'ls';
+        function teacherAccess() {
+            const password = prompt("הכנס סיסמת מורה לצפייה ופתרון מלא:");
+            if (password === 'sahar') {
+                document.getElementById('p1-ans').value = 'C';
+                document.getElementById('p2-ans').value = 'static';
+                document.getElementById('p3-ans').value = '0.0.0.3';
+                document.getElementById('p4-ans').value = '1';
+                document.getElementById('p5-ans').value = '50';
+                document.getElementById('p6-ans').value = 'block';
+                document.getElementById('p7-ans').value = '0';
+                document.getElementById('p8-ans').value = '15';
+                document.getElementById('p9-ans').value = '1';
+                document.getElementById('p10-ans').value = 'ls';
                 
-                checkPracticeAll;
-                alert"🔓 כניסת מורה אושרה. כל התשובות הנכונות הוזנו ונבדקו בהצלחה.";
-            } else if password !== null {
-                alert"❌ סיסמה שגויה. הגישה נדחתה.";
+                checkPracticeAll();
+                alert("🔓 כניסת מורה אושרה. כל התשובות הנכונות הוזנו ונבדקו בהצלחה.");
+            } else if (password !== null) {
+                alert("❌ סיסמה שגויה. הגישה נדחתה.");
             }
         }
 
-        function checkPracticeAll {
+        function checkPracticeAll() {
             let correctCount = 0;
 
             // P1
-            const p1 = document.getElementById'p1-ans'.value;
-            const p1Fb = document.getElementById'p1-fb';
-            p1Fb.classList.remove'hidden', 'text-emerald-600', 'text-red-600';
-            if p1 === 'C' {
+            const p1 = document.getElementById('p1-ans').value;
+            const p1Fb = document.getElementById('p1-fb');
+            p1Fb.classList.remove('hidden', 'text-emerald-600', 'text-red-600');
+            if (p1 === 'C') {
                 correctCount++;
                 p1Fb.innerHTML = "✓ נכון. 192.168.10.32/27 הוא ה-Prefix הספציפי והארוך ביותר שכולל את 192.168.10.45.";
-                p1Fb.classList.add'text-emerald-600';
+                p1Fb.classList.add('text-emerald-600');
             } else {
                 p1Fb.innerHTML = "✗ שגוי. התשובה הנכונה היא C - 192.168.10.32/27 לפי כלל Longest Prefix Match.";
-                p1Fb.classList.add'text-red-600';
+                p1Fb.classList.add('text-red-600');
             }
 
             // P2
-            const p2 = document.getElementById'p2-ans'.value;
-            const p2Fb = document.getElementById'p2-fb';
-            p2Fb.classList.remove'hidden', 'text-emerald-600', 'text-red-600';
-            if p2 === 'static' {
+            const p2 = document.getElementById('p2-ans').value;
+            const p2Fb = document.getElementById('p2-fb');
+            p2Fb.classList.remove('hidden', 'text-emerald-600', 'text-red-600');
+            if (p2 === 'static') {
                 correctCount++;
                 p2Fb.innerHTML = "✓ נכון. ניתוב סטטי בעל AD=1 שהוא הנמוך והאמין ביותר.";
-                p2Fb.classList.add'text-emerald-600';
+                p2Fb.classList.add('text-emerald-600');
             } else {
                 p2Fb.innerHTML = "✗ שגוי. Static Route ינצח כי ה-AD שלו הוא 1 - לעומת 110 ב-OSPF ו-120 ב-RIP.";
-                p2Fb.classList.add'text-red-600';
+                p2Fb.classList.add('text-red-600');
             }
 
             // P3
-            const p3 = document.getElementById'p3-ans'.value.trim;
-            const p3Fb = document.getElementById'p3-fb';
-            p3Fb.classList.remove'hidden', 'text-emerald-600', 'text-red-600';
-            if p3 === '0.0.0.3' {
+            const p3 = document.getElementById('p3-ans').value.trim();
+            const p3Fb = document.getElementById('p3-fb');
+            p3Fb.classList.remove('hidden', 'text-emerald-600', 'text-red-600');
+            if (p3 === '0.0.0.3') {
                 correctCount++;
                 p3Fb.innerHTML = "✓ נכון מאוד. 255.255.255.255 פחות 255.255.255.252 שווה 0.0.0.3.";
-                p3Fb.classList.add'text-emerald-600';
+                p3Fb.classList.add('text-emerald-600');
             } else {
                 p3Fb.innerHTML = "✗ שגוי. ה-Wildcard המדויק עבור /30 הוא 0.0.0.3.";
-                p3Fb.classList.add'text-red-600';
+                p3Fb.classList.add('text-red-600');
             }
 
             // P4
-            const p4 = document.getElementById'p4-ans'.value;
-            const p4Fb = document.getElementById'p4-fb';
-            p4Fb.classList.remove'hidden', 'text-emerald-600', 'text-red-600';
-            if p4 === '1' {
+            const p4 = document.getElementById('p4-ans').value;
+            const p4Fb = document.getElementById('p4-fb');
+            p4Fb.classList.remove('hidden', 'text-emerald-600', 'text-red-600');
+            if (p4 === '1') {
                 correctCount++;
                 p4Fb.innerHTML = "✓ נכון. ip route 0.0.0.0 0.0.0.0 next-hop הינה הפקודה להגדרת Default Route.";
-                p4Fb.classList.add'text-emerald-600';
+                p4Fb.classList.add('text-emerald-600');
             } else {
                 p4Fb.innerHTML = "✗ שגוי. התשובה הנכונה היא תשובה 1.";
-                p4Fb.classList.add'text-red-600';
+                p4Fb.classList.add('text-red-600');
             }
 
             // P5
-            const p5 = document.getElementById'p5-ans'.value.trim;
-            const p5Fb = document.getElementById'p5-fb';
-            p5Fb.classList.remove'hidden', 'text-emerald-600', 'text-red-600';
-            if p5 === '50' {
+            const p5 = document.getElementById('p5-ans').value.trim();
+            const p5Fb = document.getElementById('p5-fb');
+            p5Fb.classList.remove('hidden', 'text-emerald-600', 'text-red-600');
+            if (p5 === '50') {
                 correctCount++;
                 p5Fb.innerHTML = "✓ נכון. בסימון 110/50 הערך 110 הוא ה-AD והערך 50 הוא ה-Metric Cost.";
-                p5Fb.classList.add'text-emerald-600';
+                p5Fb.classList.add('text-emerald-600');
             } else {
                 p5Fb.innerHTML = "✗ שגוי. ה-Cost Metric הינו 50.";
-                p5Fb.classList.add'text-red-600';
+                p5Fb.classList.add('text-red-600');
             }
 
             // P6
-            const p6 = document.getElementById'p6-ans'.value;
-            const p6Fb = document.getElementById'p6-fb';
-            p6Fb.classList.remove'hidden', 'text-emerald-600', 'text-red-600';
-            if p6 === 'block' {
+            const p6 = document.getElementById('p6-ans').value;
+            const p6Fb = document.getElementById('p6-fb');
+            p6Fb.classList.remove('hidden', 'text-emerald-600', 'text-red-600');
+            if (p6 === 'block') {
                 correctCount++;
                 p6Fb.innerHTML = "✓ נכון. passive-interface מונעת שליחת עדכוני ניתוב לממשקים פנימיים למטרת אבטחה.";
-                p6Fb.classList.add'text-emerald-600';
+                p6Fb.classList.add('text-emerald-600');
             } else {
                 p6Fb.innerHTML = "✗ שגוי. תפקיד הפקודה הוא למנוע שליחת הודעות Hello לממשק.";
-                p6Fb.classList.add'text-red-600';
+                p6Fb.classList.add('text-red-600');
             }
 
             // P7
-            const p7 = document.getElementById'p7-ans'.value.trim;
-            const p7Fb = document.getElementById'p7-fb';
-            p7Fb.classList.remove'hidden', 'text-emerald-600', 'text-red-600';
-            if p7 === '0' {
+            const p7 = document.getElementById('p7-ans').value.trim();
+            const p7Fb = document.getElementById('p7-fb');
+            p7Fb.classList.remove('hidden', 'text-emerald-600', 'text-red-600');
+            if (p7 === '0') {
                 correctCount++;
                 p7Fb.innerHTML = "✓ נכון. Area 0 הוא ה-Backbone Area של OSPF.";
-                p7Fb.classList.add'text-emerald-600';
+                p7Fb.classList.add('text-emerald-600');
             } else {
                 p7Fb.innerHTML = "✗ שגוי. מספר האזור החובה ב-OSPF הוא 0.";
-                p7Fb.classList.add'text-red-600';
+                p7Fb.classList.add('text-red-600');
             }
 
             // P8
-            const p8 = document.getElementById'p8-ans'.value.trim;
-            const p8Fb = document.getElementById'p8-fb';
-            p8Fb.classList.remove'hidden', 'text-emerald-600', 'text-red-600';
-            if p8 === '15' {
+            const p8 = document.getElementById('p8-ans').value.trim();
+            const p8Fb = document.getElementById('p8-fb');
+            p8Fb.classList.remove('hidden', 'text-emerald-600', 'text-red-600');
+            if (p8 === '15') {
                 correctCount++;
                 p8Fb.innerHTML = "✓ נכון. ב-RIP המרחק המקסימלי המותר הוא 15 קפיצות - 16 נחשב לבלתי ניתן להגעה.";
-                p8Fb.classList.add'text-emerald-600';
+                p8Fb.classList.add('text-emerald-600');
             } else {
                 p8Fb.innerHTML = "✗ שגוי. המספר המקסימלי המותר הוא 15.";
-                p8Fb.classList.add'text-red-600';
+                p8Fb.classList.add('text-red-600');
             }
 
             // P9
-            const p9 = document.getElementById'p9-ans'.value;
-            const p9Fb = document.getElementById'p9-fb';
-            p9Fb.classList.remove'hidden', 'text-emerald-600', 'text-red-600';
-            if p9 === '1' {
+            const p9 = document.getElementById('p9-ans').value;
+            const p9Fb = document.getElementById('p9-fb');
+            p9Fb.classList.remove('hidden', 'text-emerald-600', 'text-red-600');
+            if (p9 === '1') {
                 correctCount++;
                 p9Fb.innerHTML = "✓ נכון. הפקודה היא show ip ospf neighbor.";
-                p9Fb.classList.add'text-emerald-600';
+                p9Fb.classList.add('text-emerald-600');
             } else {
                 p9Fb.innerHTML = "✗ שגוי. הפקודה הנכונה היא show ip ospf neighbor.";
-                p9Fb.classList.add'text-red-600';
+                p9Fb.classList.add('text-red-600');
             }
 
             // P10
-            const p10 = document.getElementById'p10-ans'.value;
-            const p10Fb = document.getElementById'p10-fb';
-            p10Fb.classList.remove'hidden', 'text-emerald-600', 'text-red-600';
-            if p10 === 'ls' {
+            const p10 = document.getElementById('p10-ans').value;
+            const p10Fb = document.getElementById('p10-fb');
+            p10Fb.classList.remove('hidden', 'text-emerald-600', 'text-red-600');
+            if (p10 === 'ls') {
                 correctCount++;
                 p10Fb.innerHTML = "✓ נכון. אלו מאפיינים מובהקים של Link State Protocols כמו OSPF.";
-                p10Fb.classList.add'text-emerald-600';
+                p10Fb.classList.add('text-emerald-600');
             } else {
                 p10Fb.innerHTML = "✗ שגוי. מדובר ב-Link State Protocol.";
-                p10Fb.classList.add'text-red-600';
+                p10Fb.classList.add('text-red-600');
             }
 
             // Overall Score
             practiceScore = correctCount * 10;
-            const totalFb = document.getElementById'practice-total-fb';
-            totalFb.classList.remove'hidden', 'bg-emerald-100', 'text-emerald-900', 'bg-amber-100', 'text-amber-900';
+            const totalFb = document.getElementById('practice-total-fb');
+            totalFb.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-900', 'bg-amber-100', 'text-amber-900');
             
-            if correctCount === 10 {
-                totalFb.classList.add'bg-emerald-100', 'text-emerald-900';
+            if (correctCount === 10) {
+                totalFb.classList.add('bg-emerald-100', 'text-emerald-900');
                 totalFb.innerHTML = `🏆 ציון מושלם: 100/100. ענית נכון על כל 10 התרגילים.`;
             } else {
-                totalFb.classList.add'bg-amber-100', 'text-amber-900';
+                totalFb.classList.add('bg-amber-100', 'text-amber-900');
                 totalFb.innerHTML = `📊 הציון שלך: ${practiceScore}/100 - ${correctCount} מתוך 10 נכונים. עבור על התשובות השגויות ונסה שוב.`;
             }
 
-            document.getElementById'user-score-display'.innerText = `${practiceScore}/100 XP`;
+            document.getElementById('user-score-display').innerText = `${practiceScore}/100 XP`;
         }
 
-        function downloadReport {
-            const q1 = document.getElementById'summary-q1'.value || "לא הוזנה תשובה";
-            const q2 = document.getElementById'summary-q2'.value || "לא הוזנה תשובה";
+        function downloadReport() {
+            const q1 = document.getElementById('summary-q1').value || "לא הוזנה תשובה";
+            const q2 = document.getElementById('summary-q2').value || "לא הוזנה תשובה";
 
             const text = `
 ==================================================
@@ -1473,11 +1473,11 @@ session: Routing & Subnetting // OSI Layer 3
 ==================================================
             `;
 
-            const blob = new Blob[text], { type: 'text/plain;charset=utf-8' };
-            const link = document.createElement'a';
-            link.href = URL.createObjectURLblob;
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
             link.download = 'Comprehensive_Routing_Lesson_Report.txt';
-            link.click;
+            link.click();
         }
     </script>
 </body>
