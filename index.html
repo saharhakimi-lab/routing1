@@ -179,10 +179,13 @@
             backdrop-filter: blur(10px);
             border-bottom: 2px solid var(--line);
             box-shadow: 0 4px 20px rgba(120,40,20,0.06);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         /* =====================================================
-           TAB BAR — segmented control
+           TAB BAR — FIXED & CLICKABLE
            ===================================================== */
         .tabs-nav {
             display: flex;
@@ -196,6 +199,8 @@
             background: var(--panel2);
             border: 2px solid var(--line);
             border-radius: 18px;
+            position: relative;
+            z-index: 101;
         }
         .tab-btn {
             position: relative;
@@ -210,9 +215,13 @@
             line-height: 1.2;
             white-space: nowrap;
             cursor: pointer;
+            pointer-events: auto;
+            z-index: 102;
             transition: background-color .18s ease, color .18s ease, box-shadow .18s ease, transform .18s ease, border-color .18s ease;
         }
-        .tab-btn svg { width: 1.05rem; height: 1.05rem; flex-shrink: 0; transition: color .18s ease; }
+        .tab-btn svg { width: 1.05rem; height: 1.05rem; flex-shrink: 0; transition: color .18s ease; pointer-events: none; }
+        .tab-btn div { pointer-events: none; }
+        
         .tab-btn-inactive {
             background-color: transparent;
             color: var(--muted);
@@ -246,6 +255,7 @@
             background: rgba(185, 28, 28, .08);
             border-color: rgba(185, 28, 28, .22);
             font-size: .82em;
+            pointer-events: none;
         }
         .tab-btn-active .framed-en {
             border-color: rgba(255, 255, 255, .35);
@@ -1504,4 +1514,284 @@
                 <div class="text-[8px] bg-slate-800/90 text-slate-300 px-1.5 py-0.5 rounded code-font"><span class="framed-en">OSPF</span></div>
                 <div class="text-[8px] bg-slate-800/90 text-slate-300 px-1.5 py-0.5 rounded code-font"><span class="framed-en">Static</span></div>
                 <div class="text-[8px] bg-slate-800/90 text-slate-300 px-1.5 py-0.5 rounded code-font"><span class="framed-en">CLI</span></div>
-     
+            </div>
+
+            <a href="https://gemini.google.com/gem/167016ac4a4b/66c3b83daa7940ef?usp=sharing" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold py-1.5 px-2 rounded text-[10px] flex items-center justify-center gap-1.5 transition-all border border-emerald-400/30" dir="ltr">
+                <div><span class="framed-en">connect --gem dan-gpt</span></div>
+                <i data-lucide="external-link" class="w-3 h-3"></i>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="py-4 px-4 text-center mt-12">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-slate-600 font-bold">
+            <p>© 2026 האקדמיה לרשתות - רכיבי רשת ותקשורת מחשבים</p>
+            <p class="font-semibold text-slate-700" dir="ltr"><span class="framed-en">session</span>: <span class="framed-en">Routing</span> & <span class="framed-en">Subnetting // OSI Layer 3 // Success</span>!</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        lucide.createIcons();
+
+        let q1Answer = null;
+        let q2Answer = null;
+        let practiceScore = 0;
+
+        function switchTab(tabId) {
+            const tabs = ['basics', 'intro', 'ospf', 'exercise', 'practice', 'summary'];
+            tabs.forEach(t => {
+                const section = document.getElementById(`section-${t}`);
+                if (section) section.classList.add('hidden');
+                
+                const btn = document.getElementById(`tab-${t}`);
+                if (btn) {
+                    btn.className = "tab-btn tab-btn-inactive";
+                }
+            });
+
+            const targetSection = document.getElementById(`section-${tabId}`);
+            if (targetSection) targetSection.classList.remove('hidden');
+            
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            if (activeBtn) {
+                activeBtn.className = "tab-btn tab-btn-active";
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function selectAns(qNum, choice) {
+            if (qNum === 1) {
+                q1Answer = choice;
+                document.getElementById('q1-top').className = "p-4 text-right text-base bg-white border-2 border-line rounded-xl hover:bg-slate-100 transition-all font-medium text-slate-800";
+                document.getElementById('q1-bottom').className = "p-4 text-right text-base bg-white border-2 border-line rounded-xl hover:bg-slate-100 transition-all font-medium text-slate-800";
+                document.getElementById(`q1-${choice}`).className = "p-4 text-right text-base bg-amber-50 border-2 border-amber-500 rounded-xl font-bold text-amber-950 transition-all";
+            } else if (qNum === 2) {
+                q2Answer = choice;
+                document.getElementById('q2-top').className = "p-4 text-right text-base bg-white border-2 border-line rounded-xl hover:bg-slate-100 transition-all font-medium text-slate-800";
+                document.getElementById('q2-bottom').className = "p-4 text-right text-base bg-white border-2 border-line rounded-xl hover:bg-slate-100 transition-all font-medium text-slate-800";
+                document.getElementById(`q2-${choice}`).className = "p-4 text-right text-base bg-emerald-50 border-2 border-emerald-500 rounded-xl font-bold text-emerald-950 transition-all";
+            }
+        }
+
+        function checkQuizResults() {
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.classList.remove('hidden', 'bg-red-100', 'text-red-800', 'bg-emerald-100', 'text-emerald-800', 'bg-amber-100', 'text-amber-900');
+
+            if (!q1Answer || !q2Answer) {
+                feedback.className += ' bg-amber-100 text-amber-900';
+                feedback.innerHTML = '⚠️ נא לענות על שתי השאלות לפני בדיקת התוצאות.';
+                return;
+            }
+
+            const q1Correct = (q1Answer === 'bottom');
+            const q2Correct = (q2Answer === 'top');
+
+            if (q1Correct && q2Correct) {
+                feedback.className += ' bg-emerald-100 text-emerald-900';
+                feedback.innerHTML = '🎉 כל הכבוד! ענית נכון על שתי השאלות. RIP בוחר בנתיב התחתון כי הוא סופר קפיצות בלבד (2 קפיצות לעומת 3), בעוד OSPF בוחר בנתיב העליון המהיר בגלל עלות Cost נמוכה בהרבה!';
+            } else {
+                feedback.className += ' bg-red-100 text-red-800';
+                feedback.innerHTML = '❌ חלק מהתשובות אינן נכונות. זכור: RIP משתמש בספירת קפיצות (Hop Count) בלבד, ו-OSPF משתמש בעלות (Cost) המבוססת על רוחב פס.';
+            }
+        }
+
+        function teacherAccess() {
+            const pwd = prompt("הכנס סיסמת מורה:");
+            if (pwd === "1234" || pwd === "admin" || pwd === "sahar") {
+                alert("גישת מורה אושרה! מילוי תשובות נכונות זמין.");
+                document.getElementById('p1-ans').value = 'C';
+                document.getElementById('p2-ans').value = 'static';
+                document.getElementById('p3-ans').value = '0.0.0.3';
+                document.getElementById('p4-ans').value = '1';
+                document.getElementById('p5-ans').value = '50';
+                document.getElementById('p6-ans').value = 'block';
+                document.getElementById('p7-ans').value = '0';
+                document.getElementById('p8-ans').value = '15';
+                document.getElementById('p9-ans').value = '1';
+                document.getElementById('p10-ans').value = 'ls';
+            } else if (pwd !== null) {
+                alert("סיסמה שגויה!");
+            }
+        }
+
+        function checkPracticeAll() {
+            let score = 0;
+
+            // Ex 1
+            const p1 = document.getElementById('p1-ans').value;
+            const p1fb = document.getElementById('p1-fb');
+            p1fb.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
+            if (p1 === 'C') {
+                score += 10;
+                p1fb.className += ' text-emerald-700';
+                p1fb.innerText = '✓ נכון! /27 הוא ה-Longest Prefix Match הספציפי ביותר.';
+            } else {
+                p1fb.className += ' text-red-700';
+                p1fb.innerText = '✗ שגוי. הנתב יבחר במסלול הספציפי ביותר - /27 (Longest Prefix Match).';
+            }
+
+            // Ex 2
+            const p2 = document.getElementById('p2-ans').value;
+            const p2fb = document.getElementById('p2-fb');
+            p2fb.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
+            if (p2 === 'static') {
+                score += 10;
+                p2fb.className += ' text-emerald-700';
+                p2fb.innerText = '✓ נכון! לניתוב סטטי יש AD של 1, שהוא הנמוך והאמין ביותר.';
+            } else {
+                p2fb.className += ' text-red-700';
+                p2fb.innerText = '✗ שגוי. נתיב סטטי מנצח כי ה-AD שלו הוא 1.';
+            }
+
+            // Ex 3
+            const p3 = document.getElementById('p3-ans').value.trim();
+            const p3fb = document.getElementById('p3-fb');
+            p3fb.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
+            if (p3 === '0.0.0.3') {
+                score += 10;
+                p3fb.className += ' text-emerald-700';
+                p3fb.innerText = '✓ נכון! 255.255.255.255 פחות 255.255.255.252 שווה 0.0.0.3.';
+            } else {
+                p3fb.className += ' text-red-700';
+                p3fb.innerText = '✗ שגוי. התשובה הנכונה היא 0.0.0.3.';
+            }
+
+            // Ex 4
+            const p4 = document.getElementById('p4-ans').value;
+            const p4fb = document.getElementById('p4-fb');
+            p4fb.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
+            if (p4 === '1') {
+                score += 10;
+                p4fb.className += ' text-emerald-700';
+                p4fb.innerText = '✓ נכון! הפקודה היא ip route 0.0.0.0 0.0.0.0 <Next-Hop>.';
+            } else {
+                p4fb.className += ' text-red-700';
+                p4fb.innerText = '✗ שגוי. הפקודה הנכונה היא ip route 0.0.0.0 0.0.0.0 192.168.1.254.';
+            }
+
+            // Ex 5
+            const p5 = document.getElementById('p5-ans').value.trim();
+            const p5fb = document.getElementById('p5-fb');
+            p5fb.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
+            if (p5 === '50') {
+                score += 10;
+                p5fb.className += ' text-emerald-700';
+                p5fb.innerText = '✓ נכון! בפורמט [AD/Metric], המספר השני (50) מייצג את ה-Cost Metric.';
+            } else {
+                p5fb.className += ' text-red-700';
+                p5fb.innerText = '✗ שגוי. ה-Metric/Cost הוא המספר מימין לסלאש - 50 (110 הינו ה-AD).';
+            }
+
+            // Ex 6
+            const p6 = document.getElementById('p6-ans').value;
+            const p6fb = document.getElementById('p6-fb');
+            p6fb.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
+            if (p6 === 'block') {
+                score += 10;
+                p6fb.className += ' text-emerald-700';
+                p6fb.innerText = '✓ נכון! passive-interface מונעת שליחת הודעות Hello מהממשק.';
+            } else {
+                p6fb.className += ' text-red-700';
+                p6fb.innerText = '✗ שגוי. הפקודה מונעת שליחת עדכונים והודעות Hello מהממשק.';
+            }
+
+            // Ex 7
+            const p7 = document.getElementById('p7-ans').value.trim();
+            const p7fb = document.getElementById('p7-fb');
+            p7fb.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
+            if (p7 === '0') {
+                score += 10;
+                p7fb.className += ' text-emerald-700';
+                p7fb.innerText = '✓ נכון! Area 0 הוא ה-Backbone Area המחייב ב-OSPF.';
+            } else {
+                p7fb.className += ' text-red-700';
+                p7fb.innerText = '✗ שגוי. האזור הוא Area 0.';
+            }
+
+            // Ex 8
+            const p8 = document.getElementById('p8-ans').value.trim();
+            const p8fb = document.getElementById('p8-fb');
+            p8fb.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
+            if (p8 === '15') {
+                score += 10;
+                p8fb.className += ' text-emerald-700';
+                p8fb.innerText = '✓ נכון! 15 קפיצות הן המקסימום המותר. 16 נחשב Unreachable.';
+            } else {
+                p8fb.className += ' text-red-700';
+                p8fb.innerText = '✗ שגוי. המקסימום המותר ב-RIP הוא 15 קפיצות.';
+            }
+
+            // Ex 9
+            const p9 = document.getElementById('p9-ans').value;
+            const p9fb = document.getElementById('p9-fb');
+            p9fb.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
+            if (p9 === '1') {
+                score += 10;
+                p9fb.className += ' text-emerald-700';
+                p9fb.innerText = '✓ נכון! הפקודה היא show ip ospf neighbor.';
+            } else {
+                p9fb.className += ' text-red-700';
+                p9fb.innerText = '✗ שגוי. הפקודה הנכונה היא show ip ospf neighbor.';
+            }
+
+            // Ex 10
+            const p10 = document.getElementById('p10-ans').value;
+            const p10fb = document.getElementById('p10-fb');
+            p10fb.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
+            if (p10 === 'ls') {
+                score += 10;
+                p10fb.className += ' text-emerald-700';
+                p10fb.innerText = '✓ נכון! ניהול LSDB והרצת Dijkstra מאפיינים Link State Protocols.';
+            } else {
+                p10fb.className += ' text-red-700';
+                p10fb.innerText = '✗ שגוי. מדובר בפרוטוקול מסוג Link State (כמו OSPF).';
+            }
+
+            practiceScore = score;
+            const totalFb = document.getElementById('practice-total-fb');
+            totalFb.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-900', 'bg-amber-100', 'text-amber-900');
+            if (score === 100) {
+                totalFb.className += ' bg-emerald-100 text-emerald-900';
+                totalFb.innerText = `🏆 ציון מושלם: ${score}/100! כל הכבוד, שלטת בחומר הניתוב.`;
+            } else {
+                totalFb.className += ' bg-amber-100 text-amber-900';
+                totalFb.innerText = `הציון שלך: ${score}/100. עבור על התשובות השגויות ונסה שוב.`;
+            }
+
+            // Update Summary Display
+            document.getElementById('user-score-display').innerText = `${score}/100 XP`;
+            document.getElementById('summary-status').innerHTML = `<span class="framed-en">STATUS</span>: <span class="framed-en">${score >= 70 ? 'PASSED' : 'RETRY'}</span>`;
+        }
+
+        function downloadReport() {
+            const q1 = document.getElementById('summary-q1').value;
+            const q2 = document.getElementById('summary-q2').value;
+
+            const reportText = `================================================
+דוח סיכום - שיעור מקיף בניתוב (האקדמיה לרשתות)
+================================================
+ניקוד תרגול (10 תרגילים): ${practiceScore}/100 XP
+
+--- תשובות רפלקציה ---
+1. יתרון ניתוב סטטי:
+${q1 || "לא ומלאה תשובה"}
+
+2. פעולת הנתב בהתאמה כפולה:
+${q2 || "לא ומלאה תשובה"}
+
+================================================
+נוצר בתאריך: ${new Date().toLocaleString('he-IL')}
+================================================`;
+
+            const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'Routing_Lesson_Report.txt';
+            link.click();
+        }
+    </script>
+</body>
+</html>
