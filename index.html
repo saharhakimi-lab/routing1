@@ -475,6 +475,53 @@
             html { scroll-behavior: auto; }
             * { transition-duration: .01ms !important; }
         }
+
+        /* ===== Routing table chapters (compact redesign) ===== */
+        .rt-src { --c:#0e7490; --bg:#e3f1f5; --edge:#7cc0d0; }
+        .rt-dst { --c:#a11a1a; --bg:#fbecee; --edge:#e0a6a6; }
+        .rt-met { --c:#92400e; --bg:#fdf0dc; --edge:#e3b877; }
+        .rt-hop { --c:#0b6b4a; --bg:#e4f3ec; --edge:#82c5a8; }
+        .rt-line {
+            display:flex; flex-wrap:wrap; align-items:center; gap:.5rem .6rem;
+            font-family:'Fira Code', ui-monospace, Menlo, monospace;
+            font-size:1rem; padding:.9rem 1rem; border-radius:14px;
+            background:#fff; border:2px solid var(--line); text-align:left;
+        }
+        .rt-part {
+            display:inline-block; padding:.15rem .6rem; border-radius:8px; font-weight:700;
+            color:var(--c); background:var(--bg); border:1.5px solid var(--edge);
+        }
+        .rt-dim { color:#8a7a6e; font-size:.9rem; }
+        .rt-key { padding:.8rem .9rem; border-radius:12px; background:var(--bg); border:1.5px solid var(--edge); border-top-width:5px; }
+        .rt-key-t { font-weight:800; color:var(--c); font-size:1.05rem; line-height:1.3; }
+        .rt-key-d { font-size:.85rem; color:var(--ink); line-height:1.5; margin-top:.2rem; font-weight:500; }
+        .rt-mini {
+            display:inline-block; font-family:'Fira Code', monospace; font-weight:700; font-size:.8rem;
+            padding:0 .35em; border-radius:5px; background:#fff; border:1px solid var(--edge); color:var(--c);
+        }
+        .rt-chip { padding:.25rem .8rem; border-radius:999px; color:var(--c); background:var(--bg); border:1.5px solid var(--edge); }
+        .rt-rule { padding:1.1rem; border-radius:14px; background:var(--bg); border:1.5px solid var(--edge); border-right:6px solid var(--c); }
+        .rt-rule-h { font-weight:800; font-size:1.2rem; color:var(--ink); display:flex; align-items:center; gap:.6rem; }
+        .rt-rule-s { font-size:.9rem; color:var(--muted); margin:.15rem 0 .8rem; }
+        .rt-badge {
+            display:inline-flex; align-items:center; justify-content:center; width:1.9rem; height:1.9rem;
+            border-radius:50%; background:var(--c); color:#fff; font-weight:800; font-size:1rem; flex:none;
+        }
+        .rt-pkt { font-size:.9rem; color:var(--muted); margin-bottom:.5rem; text-align:right; direction:rtl; }
+        .rt-pkt b { font-family:'Fira Code', monospace; color:var(--ink); direction:ltr; unicode-bidi:isolate; }
+        .rt-opt {
+            display:flex; justify-content:space-between; align-items:center; gap:.5rem;
+            padding:.55rem .8rem; margin-top:.4rem; border-radius:10px; background:#fff;
+            font-family:'Fira Code', monospace; font-weight:600; font-size:.95rem; border:1.5px solid var(--line);
+        }
+        .rt-opt .rt-tag { font-family:'Rubik', sans-serif; font-size:.82rem; font-weight:700; direction:rtl; }
+        .rt-opt.rt-out { opacity:.55; }
+        .rt-opt.rt-win { border-color:#0b6b4a; background:#e4f3ec; color:#0b6b4a; }
+        .rt-read { padding:.7rem; border-radius:16px; background:var(--panel2); border:1.5px solid var(--line); }
+        .rt-read .rt-line { border-width:1.5px; }
+        .rt-gist { margin:.6rem .3rem .1rem; font-size:.98rem; line-height:1.6; color:var(--ink); font-weight:500; }
+        .rt-gist strong { font-weight:800; }
+        @media (max-width: 480px) { .rt-line { font-size:.88rem; padding:.75rem; } }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between relative">
@@ -546,182 +593,122 @@
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
-                <div class="card-light p-6 border-t-4 border-t-cyan-700">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <div class="text-xs font-bold text-cyan-800 uppercase tracking-wider block">מבנה הנתונים</div>
-                            <h3 class="text-2xl font-bold text-slate-900">אנטומיה של טבלת ניתוב</h3>
-                        </div>
-                        <div class="p-2 bg-cyan-50 rounded-xl text-cyan-800 border border-cyan-200">
-                            <i data-lucide="list-tree" class="w-6 h-6"></i>
-                        </div>
-                    </div>
+            <!-- ANATOMY -->
+            <div class="card-light p-6 md:p-8">
+                <h3 class="text-2xl md:text-3xl font-black text-slate-900 mb-1">אנטומיה של טבלת ניתוב</h3>
+                <p class="text-slate-700 text-base md:text-lg font-medium mb-5">כל שורה בטבלה עונה על שאלה אחת: <strong>לאן שולחים חבילה שמיועדת לרשת הזו?</strong></p>
 
-                    <p class="text-sm md:text-base text-slate-700 mb-4 leading-relaxed font-medium">
-                        כל רשומה בטבלת הניתוב כוללת מידע קריטי המאפשר לנתב לדעת לאן להפנות את התעבורה:
-                    </p>
-
-                    <div class="space-y-3 text-sm md:text-base">
-                        <div class="p-3 bg-white rounded-lg border border-slate-200">
-                            <strong class="text-slate-900">1. רשת היעד <span class="framed-en">Destination Subnet</span>:</strong> כתובת ה-<span class="framed-en">IP</span> ומסכת רשת היעד.
-                        </div>
-                        <div class="p-3 bg-white rounded-lg border border-slate-200">
-                            <strong class="text-slate-900">2. הצעד הבא <span class="framed-en">Next-Hop IP</span> / ממשק יציאה <span class="framed-en">Exit Interface</span>:</strong> לאן לשלוח את החבילה.
-                        </div>
-                        <div class="p-3 bg-white rounded-lg border border-slate-200">
-                            <strong class="text-slate-900">3. מקור המסלול <span class="framed-en">Prefix Code</span>:</strong> מאיפה הנתב למד את הדרך <code class="font-bold text-emerald-800 code-font" dir="ltr"><span class="framed-en">C</span>=מחובר</code>, <code class="font-bold text-cyan-800 code-font" dir="ltr"><span class="framed-en">S</span>=סטטי</code>, <code class="font-bold text-red-700 code-font" dir="ltr"><span class="framed-en">O</span>=<span class="framed-en">OSPF</span></code>.
-                        </div>
-                        <div class="p-3 bg-white rounded-lg border border-slate-200">
-                            <strong class="text-slate-900">4. <span class="framed-en">AD</span> & <span class="framed-en">Metric</span>:</strong> אמינות המקור ועלות המסלול <div class="code-font font-bold" dir="ltr"><span class="framed-en">AD/Cost</span></div>.
-                        </div>
-                    </div>
+                <div class="rt-line" dir="ltr">
+                    <span class="rt-part rt-src">S</span>
+                    <span class="rt-part rt-dst">10.2.0.0/16</span>
+                    <span class="rt-part rt-met">[1/0]</span>
+                    <span class="rt-dim">via</span>
+                    <span class="rt-part rt-hop">192.168.10.254</span>
                 </div>
 
-                <div class="card-light p-6 border-t-4 border-t-red-600">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <div class="text-xs font-bold text-red-700 uppercase tracking-wider block">מנגנון ההחלטה</div>
-                            <h3 class="text-2xl font-bold text-slate-900">איך הנתב בוחר נתיב?</h3>
-                        </div>
-                        <div class="p-2 bg-red-50 rounded-xl text-red-700 border border-red-200">
-                            <i data-lucide="git-fork" class="w-6 h-6"></i>
-                        </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+                    <div class="rt-key rt-src">
+                        <div class="rt-key-t">מקור</div>
+                        <div class="rt-key-d">מי לימד את הנתב? <span class="rt-mini" dir="ltr">C</span> מחובר <span class="rt-mini" dir="ltr">S</span> סטטי <span class="rt-mini" dir="ltr">O</span> OSPF</div>
                     </div>
-
-                    <p class="text-sm md:text-base text-slate-700 mb-4 leading-relaxed font-medium">
-                        כשחבילה מגיעה לנתב, הוא פועל לפי 2 חוקי ברזל נוקשים:
-                    </p>
-
-                    <div class="space-y-4 text-sm md:text-base">
-                        <div class="info-box-purple p-4">
-                            <strong class="text-red-900 block mb-1 text-base md:text-lg font-bold">🎯 1. <span class="framed-en">Longest Prefix Match</span> - התאמה הספציפית ביותר</strong>
-                            <div class="text-slate-800 leading-relaxed block font-medium">הנתב מעדיף תמיד את הכלל הספציפי ביותר. למשל, אם מגיעה חבילה ל-<div class="code-font font-bold" dir="ltr">10.1.1.5</div>, והטבלה מכילה נתיב ל-<div class="code-font font-bold" dir="ltr">10.1.0.0/16</div> ונתיב ל-<div class="code-font font-bold" dir="ltr">10.1.1.0/24</div> – הנתב יבחר ב-<div class="code-font font-bold" dir="ltr">/24</div> כי הוא ספציפי יותר.</div>
-                        </div>
-                        <div class="info-box-blue p-4">
-                            <strong class="text-cyan-950 block mb-1 text-base md:text-lg font-bold">🏆 2. <span class="framed-en">Administrative Distance - AD</span> - מרחק מינהלי</strong>
-                            <div class="text-slate-800 leading-relaxed block font-medium">אם לנתב יש שני מסלולים לאותה רשת בדיוק ממקורות שונים, הוא יבחר במקור עם ה-<span class="framed-en">AD</span> הנמוך ביותר <div class="code-font" dir="ltr"><span class="framed-en">Static</span> = 1</div>, <div class="code-font" dir="ltr"><span class="framed-en">OSPF</span> = 110</div>, <div class="code-font" dir="ltr"><span class="framed-en">RIP</span> = 120</div>.</div>
-                        </div>
+                    <div class="rt-key rt-dst">
+                        <div class="rt-key-t">יעד</div>
+                        <div class="rt-key-d">הרשת שרוצים להגיע אליה</div>
+                    </div>
+                    <div class="rt-key rt-met">
+                        <div class="rt-key-t">AD / Metric</div>
+                        <div class="rt-key-d">כמה אפשר לסמוך על המקור, וכמה הדרך "יקרה"</div>
+                    </div>
+                    <div class="rt-key rt-hop">
+                        <div class="rt-key-t">הצעד הבא</div>
+                        <div class="rt-key-d">לאיזה נתב (או ממשק) שולחים</div>
                     </div>
                 </div>
-
             </div>
 
-            <!-- SUB-SECTION: HOW TO READ THE ROUTING TABLE -->
-            <div class="card-light p-6 md:p-8 bg-paper text-slate-800 shadow-sm rounded-2xl border-2 border-amber-600/40">
-                <div class="flex items-center gap-2 text-amber-700 font-bold text-xs uppercase tracking-widest mb-1" dir="rtl">
-                    <i data-lucide="mouse-pointer" class="w-4 h-4"></i>
-                    <div>מדריך אינטראקטיבי</div>
+            <!-- SELECTION -->
+            <div class="card-light p-6 md:p-8">
+                <h3 class="text-2xl md:text-3xl font-black text-slate-900 mb-1">איך הנתב בוחר נתיב?</h3>
+                <p class="text-slate-700 text-base md:text-lg font-medium mb-5">שני כללים, <strong>לפי הסדר</strong>:</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                    <div class="rt-rule rt-dst">
+                        <div class="rt-rule-h"><span class="rt-badge">1</span> הכי ספציפי מנצח</div>
+                        <div class="rt-rule-s"><span class="framed-en">Longest Prefix Match</span></div>
+                        <div class="rt-pkt" dir="ltr">חבילה ל־<b>10.1.1.5</b></div>
+                        <div class="rt-opt rt-out" dir="ltr"><span>10.1.0.0/16</span><span class="rt-tag">רחב</span></div>
+                        <div class="rt-opt rt-win" dir="ltr"><span>10.1.1.0/24</span><span class="rt-tag">✓ נבחר – מדויק יותר</span></div>
+                    </div>
+
+                    <div class="rt-rule rt-met">
+                        <div class="rt-rule-h"><span class="rt-badge">2</span> אותו יעד? הנמוך מנצח</div>
+                        <div class="rt-rule-s"><span class="framed-en">Administrative Distance</span> – AD</div>
+                        <div class="rt-pkt" dir="ltr">אותה רשת, ממקורות שונים</div>
+                        <div class="rt-opt rt-win" dir="ltr"><span>Static</span><span class="rt-tag">AD 1 ✓</span></div>
+                        <div class="rt-opt rt-out" dir="ltr"><span>OSPF</span><span class="rt-tag">AD 110</span></div>
+                        <div class="rt-opt rt-out" dir="ltr"><span>RIP</span><span class="rt-tag">AD 120</span></div>
+                    </div>
+
                 </div>
-                <h3 class="text-2xl md:text-3xl font-black mb-3 text-slate-900" dir="rtl">איך לקרוא את טבלת הניתוב?</h3>
-                <p class="text-slate-700 text-base md:text-lg leading-relaxed mb-6 font-medium" dir="rtl">
-                    לפניך פלט אמיתי מפקודת <code class="code-font font-bold text-amber-900 bg-amber-100 px-2 py-0.5 rounded border border-amber-300" dir="ltr"><span class="framed-en">show ip route</span></code> בנתב <span class="framed-en">Cisco</span>. 
-                    <strong class="text-slate-900 font-bold">העבר את סמן העכבר מעל כל שורה בטבלה</strong> כדי לגלות ולפרק את משמעות כל פרמטר ברשומה.
-                </p>
+            </div>
 
-                <!-- Interactive Routing Table Display -->
-                <div class="space-y-4 cli-container font-mono text-xs md:text-sm">
-                    
-                    <div class="p-3 bg-amber-50 rounded-xl border border-amber-300 text-slate-800 text-xs font-bold shadow-sm" dir="ltr">
-                        <span class="framed-en">Router</span># <span class="framed-en">show ip route</span><br>
-                        <span class="framed-en">Codes</span>: <span class="framed-en">C - connected</span>, <span class="framed-en">L - local</span>, <span class="framed-en">S - static</span>, <span class="framed-en">R - RIP</span>, <span class="framed-en">O - OSPF</span>, * - <span class="framed-en">candidate default</span>
+            <!-- HOW TO READ -->
+            <div class="card-light p-6 md:p-8">
+                <h3 class="text-2xl md:text-3xl font-black text-slate-900 mb-1">איך לקרוא את טבלת הניתוב?</h3>
+                <p class="text-slate-700 text-base md:text-lg font-medium mb-4">פלט של <span class="framed-en">show ip route</span>. בכל שורה חפשו את ארבעת הצבעים:</p>
+
+                <div class="flex flex-wrap gap-2 mb-5 text-sm font-bold">
+                    <span class="rt-chip rt-src">מקור</span>
+                    <span class="rt-chip rt-dst">יעד</span>
+                    <span class="rt-chip rt-met">AD / Metric</span>
+                    <span class="rt-chip rt-hop">הצעד הבא</span>
+                </div>
+
+                <div class="space-y-3">
+
+                    <div class="rt-read">
+                        <div class="rt-line" dir="ltr">
+                            <span class="rt-part rt-src">C</span>
+                            <span class="rt-part rt-dst">192.168.10.0/24</span>
+                            <span class="rt-dim">is directly connected,</span>
+                            <span class="rt-part rt-hop">Gi0/0/0</span>
+                        </div>
+                        <p class="rt-gist"><strong>מחוברת ישירות.</strong> הרשת צמודה לנתב, אין נתב נוסף בדרך – החבילה יוצאת מהממשק.</p>
                     </div>
 
-                    <!-- Line 1: Connected -->
-                    <div class="space-y-1">
-                        <div class="route-row p-4 bg-white rounded-xl border-2 border-slate-200 flex flex-wrap items-center justify-between gap-2 shadow-sm" dir="ltr">
-                            <div class="flex items-center gap-3">
-                                <div class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold rounded border border-emerald-300 text-sm"><span class="framed-en">C</span></div>
-                                <div class="font-bold text-emerald-900 text-sm md:text-base">192.168.10.0/24</div>
-                            </div>
-                            <div class="text-slate-700 font-semibold">
-                                <div class="text-slate-500 inline"><span class="framed-en">is directly connected</span>,</div>
-                                <div class="text-cyan-800 font-bold inline"><span class="framed-en">GigabitEthernet0/0/0</span></div>
-                            </div>
+                    <div class="rt-read">
+                        <div class="rt-line" dir="ltr">
+                            <span class="rt-part rt-src">S</span>
+                            <span class="rt-part rt-dst">10.2.0.0/16</span>
+                            <span class="rt-part rt-met">[1/0]</span>
+                            <span class="rt-dim">via</span>
+                            <span class="rt-part rt-hop">192.168.10.254</span>
                         </div>
-                        <div class="route-explanation bg-white border-2 border-emerald-500 p-4 rounded-xl text-slate-800 font-sans text-xs md:text-sm space-y-2 shadow-md" dir="rtl">
-                            <p class="font-bold text-emerald-800 text-sm mb-1 border-b border-emerald-200 pb-1">🟢 רשת מחוברת ישירות <span class="framed-en">Connected Route</span>:</p>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-slate-700">
-                                <p><strong class="text-emerald-900">קוד <span class="framed-en">C</span>:</strong> מציג שמקור המסלול הוא חיבור פיזי ישיר לנתב.</p>
-                                <p><strong class="text-emerald-900">רשת היעד:</strong> <span class="code-font text-xs font-bold" dir="ltr">192.168.10.0/24</span> כתובת הרשת ומסכת סאבנט.</p>
-                                <p><strong class="text-emerald-900">הופ נוסף:</strong> <span class="code-font text-xs" dir="ltr"><span class="framed-en">directly connected</span></span> - אין הופ נוסף <span class="framed-en">Next-Hop</span> בדרך.</p>
-                                <p><strong class="text-emerald-900">ממשק יציאה:</strong> <span class="code-font text-xs font-bold text-cyan-800" dir="ltr"><span class="framed-en">GigabitEthernet0/0/0</span></span> הממשק הפיזי בנתב.</p>
-                            </div>
-                        </div>
+                        <p class="rt-gist"><strong>סטטית.</strong> מנהל הרשת הגדיר אותה ידנית. שולחים ל־<span class="rt-mini" dir="ltr">192.168.10.254</span>.</p>
                     </div>
 
-                    <!-- Line 2: Static Route -->
-                    <div class="space-y-1">
-                        <div class="route-row p-4 bg-white rounded-xl border-2 border-slate-200 flex flex-wrap items-center justify-between gap-2 shadow-sm" dir="ltr">
-                            <div class="flex items-center gap-3">
-                                <div class="px-2.5 py-1 bg-cyan-100 text-cyan-900 font-bold rounded border border-cyan-300 text-sm"><span class="framed-en">S</span></div>
-                                <div class="font-bold text-cyan-950 text-sm md:text-base">10.2.0.0/16</div>
-                            </div>
-                            <div class="text-slate-700 font-semibold">
-                                <div class="text-amber-800 font-bold inline">1/0</div>
-                                <div class="text-slate-500 inline"><span class="framed-en">via</span></div>
-                                <div class="text-red-800 font-bold inline">192.168.10.254</div>
-                            </div>
+                    <div class="rt-read">
+                        <div class="rt-line" dir="ltr">
+                            <span class="rt-part rt-src">O</span>
+                            <span class="rt-part rt-dst">172.16.1.0/24</span>
+                            <span class="rt-part rt-met">[110/65]</span>
+                            <span class="rt-dim">via</span>
+                            <span class="rt-part rt-hop">10.0.0.2</span>
+                            <span class="rt-dim">, 00:14:22, Gi0/0/1</span>
                         </div>
-                        <div class="route-explanation bg-white border-2 border-cyan-600 p-4 rounded-xl text-slate-800 font-sans text-xs md:text-sm space-y-2 shadow-md" dir="rtl">
-                            <p class="font-bold text-cyan-900 text-sm mb-1 border-b border-cyan-200 pb-1">🔵 ניתוב סטטי <span class="framed-en">Static Route</span>:</p>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-slate-700">
-                                <p><strong class="text-cyan-950">קוד <span class="framed-en">S</span>:</strong> הוגדר ידנית על ידי מנהל הרשת.</p>
-                                <p><strong class="text-cyan-950">רשת היעד:</strong> <span class="code-font text-xs font-bold" dir="ltr">10.2.0.0/16</span> רשת מרוחקת.</p>
-                                <p><strong class="text-cyan-950">ערכי <span class="framed-en">AD/Metric</span>:</strong> <span class="code-font text-xs font-bold text-amber-800" dir="ltr">1/0</span> מרחק מינהלי <span class="framed-en">AD</span>=1 ועלות <span class="framed-en">Metric</span>=0.</p>
-                                <p><strong class="text-cyan-950">הצעד הבא:</strong> <span class="code-font text-xs font-bold text-red-800" dir="ltr"><span class="framed-en">via 192.168.10.254</span></span> כתובת ה-<span class="framed-en">Next-Hop</span> לשליחה.</p>
-                            </div>
-                        </div>
+                        <p class="rt-gist"><strong>נלמדה מ־OSPF.</strong> AD‏ 110, עלות 65. שולחים ל־<span class="rt-mini" dir="ltr">10.0.0.2</span>.</p>
                     </div>
 
-                    <!-- Line 3: OSPF Route -->
-                    <div class="space-y-1">
-                        <div class="route-row p-4 bg-white rounded-xl border-2 border-slate-200 flex flex-wrap items-center justify-between gap-2 shadow-sm" dir="ltr">
-                            <div class="flex items-center gap-3">
-                                <div class="px-2.5 py-1 bg-red-100 text-red-800 font-bold rounded border border-red-300 text-sm"><span class="framed-en">O</span></div>
-                                <div class="font-bold text-red-950 text-sm md:text-base">172.16.1.0/24</div>
-                            </div>
-                            <div class="text-slate-700 font-semibold">
-                                <div class="text-amber-800 font-bold inline">110/65</div>
-                                <div class="text-slate-500 inline"><span class="framed-en">via</span></div>
-                                <div class="text-red-800 font-bold inline">10.0.0.2</div>,
-                                <div class="text-slate-500 inline">00:14:22,</div>
-                                <div class="text-cyan-800 font-bold inline"><span class="framed-en">Gi0/0/1</span></div>
-                            </div>
+                    <div class="rt-read">
+                        <div class="rt-line" dir="ltr">
+                            <span class="rt-part rt-src">S*</span>
+                            <span class="rt-part rt-dst">0.0.0.0/0</span>
+                            <span class="rt-part rt-met">[1/0]</span>
+                            <span class="rt-dim">via</span>
+                            <span class="rt-part rt-hop">203.0.113.1</span>
                         </div>
-                        <div class="route-explanation bg-white border-2 border-red-500 p-4 rounded-xl text-slate-800 font-sans text-xs md:text-sm space-y-2 shadow-md" dir="rtl">
-                            <p class="font-bold text-red-800 text-sm mb-1 border-b border-red-200 pb-1">🔴 נתיב שנלמד דינמית דרך <span class="framed-en">OSPF</span>:</p>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-slate-700">
-                                <p><strong class="text-red-900">קוד <span class="framed-en">O</span>:</strong> נלמד אוטומטית על ידי פרוטוקול <span class="framed-en">OSPF</span>.</p>
-                                <p><strong class="text-red-900">ערכי 110/65:</strong> <span class="code-font text-xs font-bold text-amber-800" dir="ltr">110</span> הינו מרחק מינהלי <span class="framed-en">AD</span> ו-<span class="code-font text-xs font-bold text-amber-800" dir="ltr">65</span> הינה העלות <span class="framed-en">Metric/Cost</span>.</p>
-                                <p><strong class="text-red-900">הצעד הבא:</strong> <span class="code-font text-xs font-bold text-red-800" dir="ltr"><span class="framed-en">via 10.0.0.2</span></span> כתובת ה-<span class="framed-en">Next-Hop</span>.</p>
-                                <p><strong class="text-red-900">זמן וממשק:</strong> למד לפני <span class="code-font text-xs" dir="ltr">00:14:22</span> דרך ממשק מקומי <span class="code-font text-xs font-bold text-cyan-800" dir="ltr"><span class="framed-en">Gi0/0/1</span></span>.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Line 4: Default Route -->
-                    <div class="space-y-1">
-                        <div class="route-row p-4 bg-white rounded-xl border-2 border-slate-200 flex flex-wrap items-center justify-between gap-2 shadow-sm" dir="ltr">
-                            <div class="flex items-center gap-3">
-                                <div class="px-2.5 py-1 bg-amber-100 text-amber-950 font-bold rounded border border-amber-300 text-sm"><span class="framed-en">S</span>*</div>
-                                <div class="font-bold text-amber-950 text-sm md:text-base">0.0.0.0/0</div>
-                            </div>
-                            <div class="text-slate-700 font-semibold">
-                                <div class="text-amber-800 font-bold inline">1/0</div>
-                                <div class="text-slate-500 inline"><span class="framed-en">via</span></div>
-                                <div class="text-red-800 font-bold inline">203.0.113.1</div>
-                            </div>
-                        </div>
-                        <div class="route-explanation bg-white border-2 border-amber-500 p-4 rounded-xl text-slate-800 font-sans text-xs md:text-sm space-y-2 shadow-md" dir="rtl">
-                            <p class="font-bold text-amber-900 text-sm mb-1 border-b border-amber-200 pb-1">🟡 נתיב ברירת מחדל <span class="framed-en">Default Route</span>:</p>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-slate-700">
-                                <p><strong class="text-amber-950">קוד <span class="framed-en">S</span>*:</strong> נתיב סטטי המסומן כנקודת יציאה אחרונה <span class="framed-en">Candidate Default</span>.</p>
-                                <p><strong class="text-amber-950">כתובת 0.0.0.0/0:</strong> כל יעד שהוא - תופס כל חבילה שאין לה מסלול ספציפי יותר.</p>
-                                <p><strong class="text-amber-950">הצעד הבא:</strong> <span class="code-font text-xs font-bold text-red-800" dir="ltr"><span class="framed-en">via 203.0.113.1</span></span> כתובת הנתב של ספק האינטרנט <span class="framed-en">ISP</span>.</p>
-                            </div>
-                        </div>
+                        <p class="rt-gist"><strong>ברירת מחדל.</strong> כל יעד שאין לו נתיב ספציפי יותר הולך לנתב של ספק האינטרנט.</p>
                     </div>
 
                 </div>
@@ -1634,164 +1621,4 @@
             }
 
             // Ex 2
-            const p2 = document.getElementById('p2-ans').value;
-            const p2fb = document.getElementById('p2-fb');
-            p2fb.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
-            if (p2 === 'static') {
-                score += 10;
-                p2fb.className += ' text-emerald-700';
-                p2fb.innerText = '✓ נכון! לניתוב סטטי יש AD של 1, שהוא הנמוך והאמין ביותר.';
-            } else {
-                p2fb.className += ' text-red-700';
-                p2fb.innerText = '✗ שגוי. נתיב סטטי מנצח כי ה-AD שלו הוא 1.';
-            }
-
-            // Ex 3
-            const p3 = document.getElementById('p3-ans').value.trim();
-            const p3fb = document.getElementById('p3-fb');
-            p3fb.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
-            if (p3 === '0.0.0.3') {
-                score += 10;
-                p3fb.className += ' text-emerald-700';
-                p3fb.innerText = '✓ נכון! 255.255.255.255 פחות 255.255.255.252 שווה 0.0.0.3.';
-            } else {
-                p3fb.className += ' text-red-700';
-                p3fb.innerText = '✗ שגוי. התשובה הנכונה היא 0.0.0.3.';
-            }
-
-            // Ex 4
-            const p4 = document.getElementById('p4-ans').value;
-            const p4fb = document.getElementById('p4-fb');
-            p4fb.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
-            if (p4 === '1') {
-                score += 10;
-                p4fb.className += ' text-emerald-700';
-                p4fb.innerText = '✓ נכון! הפקודה היא ip route 0.0.0.0 0.0.0.0 <Next-Hop>.';
-            } else {
-                p4fb.className += ' text-red-700';
-                p4fb.innerText = '✗ שגוי. הפקודה הנכונה היא ip route 0.0.0.0 0.0.0.0 192.168.1.254.';
-            }
-
-            // Ex 5
-            const p5 = document.getElementById('p5-ans').value.trim();
-            const p5fb = document.getElementById('p5-fb');
-            p5fb.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
-            if (p5 === '50') {
-                score += 10;
-                p5fb.className += ' text-emerald-700';
-                p5fb.innerText = '✓ נכון! בפורמט [AD/Metric], המספר השני (50) מייצג את ה-Cost Metric.';
-            } else {
-                p5fb.className += ' text-red-700';
-                p5fb.innerText = '✗ שגוי. ה-Metric/Cost הוא המספר מימין לסלאש - 50 (110 הינו ה-AD).';
-            }
-
-            // Ex 6
-            const p6 = document.getElementById('p6-ans').value;
-            const p6fb = document.getElementById('p6-fb');
-            p6fb.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
-            if (p6 === 'block') {
-                score += 10;
-                p6fb.className += ' text-emerald-700';
-                p6fb.innerText = '✓ נכון! passive-interface מונעת שליחת הודעות Hello מהממשק.';
-            } else {
-                p6fb.className += ' text-red-700';
-                p6fb.innerText = '✗ שגוי. הפקודה מונעת שליחת עדכונים והודעות Hello מהממשק.';
-            }
-
-            // Ex 7
-            const p7 = document.getElementById('p7-ans').value.trim();
-            const p7fb = document.getElementById('p7-fb');
-            p7fb.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
-            if (p7 === '0') {
-                score += 10;
-                p7fb.className += ' text-emerald-700';
-                p7fb.innerText = '✓ נכון! Area 0 הוא ה-Backbone Area המחייב ב-OSPF.';
-            } else {
-                p7fb.className += ' text-red-700';
-                p7fb.innerText = '✗ שגוי. האזור הוא Area 0.';
-            }
-
-            // Ex 8
-            const p8 = document.getElementById('p8-ans').value.trim();
-            const p8fb = document.getElementById('p8-fb');
-            p8fb.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
-            if (p8 === '15') {
-                score += 10;
-                p8fb.className += ' text-emerald-700';
-                p8fb.innerText = '✓ נכון! 15 קפיצות הן המקסימום המותר. 16 נחשב Unreachable.';
-            } else {
-                p8fb.className += ' text-red-700';
-                p8fb.innerText = '✗ שגוי. המקסימום המותר ב-RIP הוא 15 קפיצות.';
-            }
-
-            // Ex 9
-            const p9 = document.getElementById('p9-ans').value;
-            const p9fb = document.getElementById('p9-fb');
-            p9fb.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
-            if (p9 === '1') {
-                score += 10;
-                p9fb.className += ' text-emerald-700';
-                p9fb.innerText = '✓ נכון! הפקודה היא show ip ospf neighbor.';
-            } else {
-                p9fb.className += ' text-red-700';
-                p9fb.innerText = '✗ שגוי. הפקודה הנכונה היא show ip ospf neighbor.';
-            }
-
-            // Ex 10
-            const p10 = document.getElementById('p10-ans').value;
-            const p10fb = document.getElementById('p10-fb');
-            p10fb.classList.remove('hidden', 'text-emerald-700', 'text-red-700');
-            if (p10 === 'ls') {
-                score += 10;
-                p10fb.className += ' text-emerald-700';
-                p10fb.innerText = '✓ נכון! ניהול LSDB והרצת Dijkstra מאפיינים Link State Protocols.';
-            } else {
-                p10fb.className += ' text-red-700';
-                p10fb.innerText = '✗ שגוי. מדובר בפרוטוקול מסוג Link State (כמו OSPF).';
-            }
-
-            practiceScore = score;
-            const totalFb = document.getElementById('practice-total-fb');
-            totalFb.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-900', 'bg-amber-100', 'text-amber-900');
-            if (score === 100) {
-                totalFb.className += ' bg-emerald-100 text-emerald-900';
-                totalFb.innerText = `🏆 ציון מושלם: ${score}/100! כל הכבוד, שלטת בחומר הניתוב.`;
-            } else {
-                totalFb.className += ' bg-amber-100 text-amber-900';
-                totalFb.innerText = `הציון שלך: ${score}/100. עבור על התשובות השגויות ונסה שוב.`;
-            }
-
-            // Update Summary Display
-            document.getElementById('user-score-display').innerText = `${score}/100 XP`;
-            document.getElementById('summary-status').innerHTML = `<span class="framed-en">STATUS</span>: <span class="framed-en">${score >= 70 ? 'PASSED' : 'RETRY'}</span>`;
-        }
-
-        function downloadReport() {
-            const q1 = document.getElementById('summary-q1').value;
-            const q2 = document.getElementById('summary-q2').value;
-
-            const reportText = `================================================
-דוח סיכום - שיעור מקיף בניתוב (האקדמיה לרשתות)
-================================================
-ניקוד תרגול (10 תרגילים): ${practiceScore}/100 XP
-
---- תשובות רפלקציה ---
-1. יתרון ניתוב סטטי:
-${q1 || "לא ומלאה תשובה"}
-
-2. פעולת הנתב בהתאמה כפולה:
-${q2 || "לא ומלאה תשובה"}
-
-================================================
-נוצר בתאריך: ${new Date().toLocaleString('he-IL')}
-================================================`;
-
-            const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'Routing_Lesson_Report.txt';
-            link.click();
-        }
-    </script>
-</body>
-</html>
+            const p2 = doc
